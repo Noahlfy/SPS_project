@@ -5,7 +5,7 @@ import subprocess
 import sys
 import io
 
-folder_path = "Data"
+json_folder_path = "Data.json"
 
 time_data = []
 accel_x_data = []
@@ -33,18 +33,6 @@ def on_message(client, userdata, msg):
     # Conversion du message en JSON
     data = json.loads(msg.payload.decode())
     
-    time_data.append(t)
-    accel_x_data.append(data['accel_x'])
-    accel_y_data.append(data['accel_y'])
-    accel_z_data.append(data['accel_z'])
-    
-    eul_x_data.append(data['eul_x'])
-    eul_y_data.append(data['eul_y'])
-    eul_z_data.append(data['eul_z'])
-    
-    t += time_step  # Incrément du temps
-
-    
     print(f"Accelerometer X: {data['accel_x']}, Y: {data['accel_y']}, Z: {data['accel_z']}")
     print(f"Euler X: {data['eul_x']}, Y: {data['eul_y']}, Z: {data['eul_z']}")
 
@@ -52,7 +40,7 @@ def on_message(client, userdata, msg):
     if data['accel_x'] > 10:
         print("Alert: High acceleration detected!")
 
-    file_path = os.path.join(folder_path, "data_test.json")
+    file_path = os.path.join(json_folder_path, "data_test1.json")
 
     # Lire les données existantes si le fichier existe
     if os.path.exists(file_path):
@@ -60,12 +48,24 @@ def on_message(client, userdata, msg):
             try:
                 existing_data = json.load(json_file)
             except json.JSONDecodeError:
-                existing_data = []  # Si le fichier est vide ou corrompu, initialiser à une liste vide
+                existing_data = {}  # Si le fichier est vide ou corrompu, initialiser à une liste vide
     else:
-        existing_data = []  # Si le fichier n'existe pas encore, commencer avec une liste vide
+        existing_data = {}  # Si le fichier n'existe pas encore, commencer avec une liste vide
 
     # Ajouter les nouvelles données aux données existantes
-    existing_data.append(data)
+    for (key, value) in data.items() : 
+        if key not in existing_data :
+            existing_data[key] = []
+        existing_data[key].append(value)
+    
+    if "Time" in existing_data :
+        t = existing_data["Time"][-1]
+        t += time_step  # Incrément du temps
+        existing_data["Time"].append(t)
+
+    else :
+        existing_data["Time"] = []
+        existing_data["Time"].append(t)
 
     # Écrire toutes les données (anciennes + nouvelles) dans le fichier
     with open(file_path, 'w') as json_file:
@@ -73,7 +73,6 @@ def on_message(client, userdata, msg):
 
 
 # Démarrer mosquitto
-
 captured_output = io.StringIO()
 sys.stdout = captured_output
 
