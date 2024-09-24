@@ -1,0 +1,16 @@
+
+# MODE GENERAL
+# L'idée ce serait d'appuyer sur un bouton pour démarrer les mesures et pouvoir les arrêter à tout moment
+# On donne un certain nombre de stats pendant l'enregistrement (vitesse actuelle, distance parcourue, niveau de fatigue (proba)
+# Quand on arrête, le programme demande le nom que l'on veut lui donner, sinon il lui assigne un nom par défaut
+# il donne des stats globales : "accélération max" (toutes les valeurs max), nombre de risques de commotions pendant le match, un état de forme (why not)
+# A la fin de l'enregistrement, le programme le récupère dans la base de donnée pour continuer à entrainer le modèle
+
+#MODE MESURE
+# Ce mode a pour but de faire des tests plus précis, notamment lors des situations.
+# Il faut alors être capable de garder la connexion MQTT pendant tuos les tests, mais d'arrêter à chaque fois l'essai puis d'en redémarrer un nouveau
+
+# ENTRAINEMENT DE l'IA
+# Chercher des bases de données sur des matchs de rugby
+# Une IA pour la fatigue globale du joueur
+# une Ia pour les risques de commotuions en fontion de la vitesse et de la position (global ou de la tête) du joueur

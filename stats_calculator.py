@@ -1,0 +1,1 @@
+# Contient des fonctions pour calculer les statistiques basées sur les données recueillies.

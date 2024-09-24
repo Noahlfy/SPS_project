@@ -1,0 +1,1 @@
+#  Fonctions utilitaires pour des tâches spécifiques (par exemple, formater les noms de fichiers, etc.).

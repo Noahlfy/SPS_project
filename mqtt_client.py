@@ -1,0 +1,1 @@
+# Classe pour gérer la connexion MQTT. Elle se chargera d'envoyer et de recevoir les données depuis l'ESP32.

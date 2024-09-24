@@ -2,9 +2,6 @@ import matplotlib.pyplot as plt
 import json
 import math
 
-
-
-
 def plot(name) : 
     path = "Data.json"
     with open(path + "/" + name + ".json") as f :
@@ -39,6 +36,8 @@ plot("data_test1")
 
 
 
+
+
 # To plot the values not correctly implemented
 def plot2(name) :
     path = "Data_test1"
@@ -59,9 +58,7 @@ def plot2(name) :
     num_graphs = len(all_data)
     num_cols = 3
     num_rows = math.ceil(num_graphs/num_cols)
-    
-    
-    
+        
     fig, axs = plt.subplots(num_rows, num_cols, figsize=(12, num_rows * 3))  # Taille adaptée
 
     axs = axs.flatten()  

@@ -1,0 +1,1 @@
+# Contient le code pour l'interface graphique, incluant les boutons et l'affichage des statistiques.
