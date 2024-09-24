@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import json
 import math
 
-path = "Data"
+path = "Data_test1"
 
 def plot(name) : 
     with open(path + "/" + name + ".json") as f :
@@ -41,4 +41,4 @@ def plot(name) :
     plt.show()
     return None
 
-plot("data1")
+plot("data_accélération")
