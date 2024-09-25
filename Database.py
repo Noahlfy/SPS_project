@@ -9,7 +9,8 @@ class Database:
     def create_tables(self):
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS sessions (
-            session_id INTEGER PRIMARY KEY,  -- Définir comme clé primaire
+            session_id INTEGER PRIMARY KEY,  
+            session_name TEXT DEFAULT 'Unnamed session',
             start_time DATETIME DEFAULT CURRENT_TIMESTAMP,
             end_time DATETIME,
             acceleration_max REAL,
@@ -22,7 +23,7 @@ class Database:
         
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS measurements (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,  -- Clé primaire auto-incrémentée
+            id INTEGER PRIMARY KEY AUTOINCREMENT,  
             session_id INTEGER,
             time DATETIME DEFAULT CURRENT_TIMESTAMP,
             accel_x REAL,
@@ -37,11 +38,11 @@ class Database:
         
         self.connection.commit()
         
-    def insert_session(self, session_id, start_time, end_time, acceleration_max, speed_max, total_distance, commotion_risk, fatigue_level):
+    def insert_session(self, session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, commotion_risk, fatigue_level):
         self.cursor.execute('''
-            INSERT INTO sessions (session_id, start_time, end_time, acceleration_max, speed_max, total_distance, commotion_risk, fatigue_level)
+            INSERT INTO sessions (session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, commotion_risk, fatigue_level)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (session_id, start_time, end_time, acceleration_max, speed_max, total_distance, commotion_risk, fatigue_level))
+        ''', (session_id, start_time, session_name, end_time, acceleration_max, speed_max, total_distance, commotion_risk, fatigue_level))
         self.connection.commit()
         
     def insert_measurement(self, session_id, time, accel_x, accel_y, accel_z, eul_x, eul_y, eul_z): 
@@ -61,9 +62,10 @@ class Database:
         self.cursor.execute('''
         DELETE FROM measurements WHERE id = ?
         ''', (measurement_id,))
-        self.connection.commit()  # N'oublie pas de valider les modifications
-
-
+        self.connection.commit()
+  
+    
+    
     def fetch_all_measurements(self):
         self.cursor.execute('SELECT * FROM measurements')
         return self.cursor.fetchall()
