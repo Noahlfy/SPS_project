@@ -28,11 +28,11 @@ class MQTTClient:
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
         
-    def on_message(self, client, rc) :
+    def on_connect(self, client, userdata, flags, rc) :
         print("Connected with result code " + str(rc))
         client.subscribe(self.topic)
     
-    def on_connect(self, client, msg) :
+    def on_message(self, client, userdata, msg) :
         data = json.loads(msg.payload.decode())
         self.data_handler.process_data(data)
         

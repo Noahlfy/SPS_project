@@ -2,7 +2,7 @@ import sqlite3
 
 class Database:
     def __init__(self, db_name='Database.db'):
-        self.connection = sqlite3.connect(db_name)
+        self.connection = sqlite3.connect(db_name, check_same_thread=False)
         self.cursor = self.connection.cursor()
         self.create_tables()
         
@@ -10,7 +10,7 @@ class Database:
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS sessions (
             session_id INTEGER PRIMARY KEY,  
-            session_name TEXT DEFAULT 'Unnamed session',
+            session_name VARCHAR(50),
             start_time DATETIME DEFAULT CURRENT_TIMESTAMP,
             end_time DATETIME,
             acceleration_max REAL,
@@ -38,12 +38,27 @@ class Database:
         
         self.connection.commit()
         
+    def delete_tables(self):
+        self.cursor.execute('DROP TABLE IF EXISTS sessions')
+        self.cursor.execute('DROP TABLE IF EXISTS measurements')
+        
+    def check_table_exists(self, table_name):
+        self.cursor.execute('''
+            SELECT name FROM sqlite_master WHERE type='table' AND name=?
+        ''', (table_name,))
+        result = self.cursor.fetchone()
+        if result:
+            return True
+        else:
+            return False
+
     def insert_session(self, session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, commotion_risk, fatigue_level):
         self.cursor.execute('''
             INSERT INTO sessions (session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, commotion_risk, fatigue_level)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (session_id, start_time, session_name, end_time, acceleration_max, speed_max, total_distance, commotion_risk, fatigue_level))
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, commotion_risk, fatigue_level))
         self.connection.commit()
+
         
     def insert_measurement(self, session_id, time, accel_x, accel_y, accel_z, eul_x, eul_y, eul_z): 
         self.cursor.execute('''
@@ -62,9 +77,7 @@ class Database:
         self.cursor.execute('''
         DELETE FROM measurements WHERE id = ?
         ''', (measurement_id,))
-        self.connection.commit()
-  
-    
+        self.connection.commit()   
     
     def fetch_all_measurements(self):
         self.cursor.execute('SELECT * FROM measurements')
@@ -79,3 +92,4 @@ class Database:
 
 
 
+    
