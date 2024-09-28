@@ -1,4 +1,5 @@
 import sqlite3
+import pandas as pd
 
 class Database:
     def __init__(self, db_name='Database.db'):
@@ -29,9 +30,10 @@ class Database:
             accel_x REAL,
             accel_y REAL,
             accel_z REAL,
-            eul_x REAL,
-            eul_y REAL,
-            eul_z REAL,
+            quat_w REAL,
+            quat_x REAL,
+            quat_y REAL,
+            quat_z REAL,
             CONSTRAINT FK_measurements_session_id FOREIGN KEY (session_id) REFERENCES sessions(session_id)
         )
         ''')
@@ -60,11 +62,11 @@ class Database:
         self.connection.commit()
 
         
-    def insert_measurement(self, session_id, time, accel_x, accel_y, accel_z, eul_x, eul_y, eul_z): 
+    def insert_measurement(self, session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z): 
         self.cursor.execute('''
-            INSERT INTO measurements (session_id, time, accel_x, accel_y, accel_z, eul_x, eul_y, eul_z)
+            INSERT INTO measurements (session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (session_id, time, accel_x, accel_y, accel_z, eul_x, eul_y, eul_z))
+        ''', (session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z))
         self.connection.commit()
         
     def delete_session(self, session_id):
@@ -86,6 +88,16 @@ class Database:
     def fetch_all_sessions(self):
         self.cursor.execute('SELECT * FROM sessions')
         return self.cursor.fetchall()
+    
+    def to_dataframe_measurements(self):
+        query = "SELECT * from measurements"
+        df = pd.read_sql_query(query, self.connection)
+        return df
+    
+    def to_dataframe_sessions(self):
+        query = "SELECT * from sessions"
+        df = pd.read_sql_query(query, self.connection)
+        return df
 
     def close(self):
         self.connection.close()

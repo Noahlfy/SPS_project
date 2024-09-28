@@ -1,6 +1,8 @@
 from Database import Database
 from mqtt_client import MQTTClient
 from data_handler import DataHandler
+# from stats_calculator import RealTimeStatistics
+# from stats_calculator import RealTimePlotter
 
 def main() :
     
@@ -10,6 +12,7 @@ def main() :
     mqtt_client = MQTTClient("172.20.10.10", "esp32/output", data_handler)
     
     mqtt_client.start()
+    db.delete_tables()
     db.create_tables()
     try:
         while True:

@@ -32,7 +32,7 @@ class DataHandler:
             time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             with self.lock:  # Utilisation du verrou lors de l'accès à la base
                 print(f"Inserting measures for session {self.get_last_session_id()}")
-                self.db.insert_measurement(self.active_session_id, time, data['accel_x'], data['accel_y'], data['accel_z'], data['eul_x'], data['eul_y'], data['eul_z'])
+                self.db.insert_measurement(self.active_session_id, time, data['accel_x'], data['accel_y'], data['accel_z'], data['quat_w'], data['quat_x'], data['quat_y'], data['quat_z'])
         else :
             print("No session started. Measures not registered.")
 
