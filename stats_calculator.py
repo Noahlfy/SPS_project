@@ -21,18 +21,24 @@ class Statistics :
 class RealTimeStatistics:
     def __init__(self, db):
         self.db = db
-        self.measurements = db.to_dataframe_measurements()
-        self.sessions = db.to_dataframe_sessions()
+        
+        self.tables = ['sessions', 'BNO055_head', 'BNO055_chest', 'BNO055_right_leg', 'BNO055_left_leg', 'MAX30102', 'BMP280']
+        for table in self.tables:
+            df = self.to_dataframe(table) 
+            setattr(self, table, df)       # Create an attribut with the table name
+
+        
         self.active_session_id = DataHandler(db).active_session_id
-        self.acceleration = [0]                         # To avoid cases where a function tries to use an element that doesn't exist
-        self.pace = [0]                                 # To avoid cases where a function tries to use an element that doesn't exist
-        self.velocities = [0]                           # Contains the velocities we mesure, without any modification, mainly to compute the distance
+        self.acceleration = [np.zeros((3,1))]                         # Stores the global acceleration vector
+        self.g_measurements = [0]                    # 0 to avoid cases where a function tries to use an element that doesn't exist
+        self.velocities = [np.zeros((3,1))]                           # Contains the velocities we mesure, without any modification, mainly to compute the distance
+        self.velocities_norm = [0]
         self.distance = 0
 
     
-    
     def start_timer(self):
-        start_time =  self.sessions.loc[self.sessions['session_id'] == self.active_session_id, 'start_time'].values[0], 
+        start_time = self.sessions.loc[self.sessions['session_id'] == self.active_session_id, 'start_time'].values[0]
+
         try : 
             while self.active_session_id is not None :
                 elapsed_time = time.time() - start_time
@@ -41,61 +47,75 @@ class RealTimeStatistics:
         except KeyboardInterrupt :
             print('\nTimer stopped.')
     
+    ## Here, we are computing general stats for distance, speed and acceleration
+    ## We are using the BNO055 on the chest for the stability of measures
     
-    def compute_dt(self):
-        if len(self.measurements) < 2:
+    def check_session(self):
+        if self.active_session_id is not None :
+            return np.sum(self.BNO055_chest["id_session"])        ## The number of elements in the last session
+        else :
+            print("No session is active.")
+            return 0
+        
+    def dt(self):
+        if self.check_session() < 3:
             return 0.5  
-        last_timestamp = self.measurements.loc[self.measurements["BNO055_head"] = "accel_x", :].iloc[-1]['time']
-        previous_timestamp = self.measurements.iloc[-2]['time']
+        last_timestamp = self.BNO055_chest.iloc[-1]['time']
+        previous_timestamp = self.BNO055_chest.iloc[-2]['time']
         dt = (last_timestamp - previous_timestamp).total_seconds()  
         return dt if dt > 0 else 0.5  
 
     
     def compute_acceleration(self, max_size = 100) :
-        accel_x = self.measurements.iloc[-1]["accel_x"]
-        accel_y = self.measurements.iloc[-1]["accel_y"]
-        accel_z = self.measurements.iloc[-1]["accel_z"]
         
-        rotation_matrix = R.from_quat(self.measurements.iloc[-1]['quat_w'], 
-                                          self.measurements.iloc[-1]['quat_x'], 
-                                          self.measurements.iloc[-1]['quat_y'], 
-                                          self.measurements.iloc[-1]['quat_z']).as_matrix()
-        local_acceleration = np.array([accel_x, accel_y, accel_z])
-        global_acceleration = np.dot(rotation_matrix.T, local_acceleration)
-        self.acceleration.append(np.linalg.norm(global_acceleration))  # Acceleration norm
-        
-        if len(self.acceleration) > max_size :
-            self.acceleration.pop(0)
+        if self.check_session() > 0:
+            accel_x = self.BNO055_chest.iloc[-1]["accel_x"]
+            accel_y = self.BNO055_chest.iloc[-1]["accel_y"]
+            accel_z = self.BNO055_chest.iloc[-1]["accel_z"]
+            
+            rotation_matrix = R.from_quat(self.BNO055_chest.iloc[-1]['quat_w'], 
+                                            self.BNO055_chest.iloc[-1]['quat_x'], 
+                                            self.BNO055_chest.iloc[-1]['quat_y'], 
+                                            self.BNO055_chest.iloc[-1]['quat_z']).as_matrix()
+            
+            local_acceleration = np.array([accel_x, accel_y, accel_z])
+            global_acceleration = np.dot(rotation_matrix.T, local_acceleration)
+            
+            self.acceleration.append(global_acceleration)
+            self.g_measurements.append(np.linalg.norm(global_acceleration)/9.81)  # Acceleration norm
+            
+            if len(self.acceleration) > max_size :
+                self.acceleration.pop(0)
+
 
 
     # We have to take a sufficient amount of data 
-    def compute_pace(self, window_size=10, max_size = 100):
-        dt = self.compute_dt()
-        if len(self.acceleration) < window_size:
-            self.pace.append(self.pace[-1] + self.acceleration[-1] * dt)
-        else : 
-            velocities = [self.pace[-1]]
-            for i in range(1, window_size) :
-                velocities.append(velocities[-1] + self.acceleration[i-window_size]*dt)
-
-            velocities = pd.Series(velocities)
-            self.pace.append(velocities.mean())
-            
-        if len(self.pace) > max_size :
-            self.pace.pop(0)
-    
-    def compute_velocities(self, max_size = 100) :
-        dt = self.compute_dt()
-        self.velocities.append(self.velocities[-1] + self.acceleration[-1] * dt)
+    def pace(self, window_size=10, max_size = 100):
         
+        velocity = self.velocities[-1] + self.acceleration[-1] * self.dt()
+        self.velocities.append(velocity)
+        velocity_norm = np.linalg.norm(velocity)
+        self.velocities_norm.append(velocity_norm)
+        
+        if len(self.velocities_norm) < window_size:
+            pace = velocity_norm
+        else :                 
+            pace = np.mean(self.velocities_norm[-window_size:])       # Mean on the ten last velocity values
+                    
         if len(self.velocities) > max_size :
             self.velocities.pop(0)
-        
-    # it is not correlated with the pace function (or self.pace) because we want the exact distance and the function pace is a mean
+            
+        return pace
+    
+
+    # it is not correlated with the pace function because we want the exact distance and the function pace is a mean
     def compute_distance(self):
-        dt = self.compute_dt()
-        if len(self.velocities) > 1 :
-            self.distance += self.velocities[-1] * dt
+        if len(self.velocities_norm) > 1:
+            dt = self.dt()
+            if dt > 0:
+                self.distance += self.velocities_norm[-1] * dt
+        return self.distance
+            
        
     
         

@@ -104,9 +104,9 @@ class Database:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_id INTEGER,
             time DATETUIME DEFAULT CURRENT_TIMESTAMP,
-            Temperature REAL,
-            Pressure REAL,
-            Altitude REAL, 
+            temperature REAL,
+            pressure REAL,
+            altitude REAL, 
             CONSTRAINT FK_BMP280_session_id FOREIGN KEY (session_id) REFERENCES sessions(session_id)
           )                  
         ''')
@@ -170,11 +170,11 @@ class Database:
         ''', (session_id, time, SpO2, BPM))
         self.connection.commit()
     
-    def insert_BMP280(self, session_id, time, Temperature, Pressure, Altitude) :
+    def insert_BMP280(self, session_id, time, temperature, pressure, altitude) :
         self.cursor.execute('''
-        INSERT INTO BMP280 (session_id, time, Temperature, Pressure, Altitude)
+        INSERT INTO BMP280 (session_id, time, temperature, pressure, altitude)
         VALUES (?, ?, ?, ?)
-        ''', (session_id, time, Temperature, Pressure, Altitude))
+        ''', (session_id, time, temperature, pressure, altitude))
         self.connection.commit()
     
     

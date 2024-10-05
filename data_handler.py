@@ -36,21 +36,23 @@ class DataHandler:
                 print(f"Inserting measures for session {self.get_last_session_id()}")
                 
                 if 'max30102' in data :
-                    self.db.insert_measurement(self.active_session_id, time, "MAX30102", data['MAX30102']["SpO2"], data['MAX30102']['BPM'], 0, 0)
+                    self.db.insert_MAX30102(self.active_session_id, time, data['MAX30102']["SpO2"], data['MAX30102']['BPM'])
                 if 'BMP280' in data :
-                    self.db.insert_measurement(self.active_session_id, time, "BMP280", data['BMP280']["T"], data['BMP280']['P'], data['BMP280']['altitude'], 0)                   
+                    self.db.insert_BMP280(self.active_session_id, time, data['BMP280']["temperature"], data['BMP280']['pressure'], data['BMP280']['altitude'])                   
                 if 'BNO055_head' in data :
-                    self.db.insert_measurement(self.active_session_id, time, "BNO055_head", data['BNO055_head']["accel_x"], data['BNO055_head']['accel_y'], data['BNO055_head']["accel_z"], 0)
-                    self.db.insert_measurement(self.active_session_id, time, "BNO055_head", data['BNO055_head']["quat_x"], data['BNO055_head']['quat_y'], data['BNO055_head']["quat_z"], data['BNO055_head']["quat_w"])
+                    self.db.insert_BNO055('BNO055_head', self.active_session_id, time, "BNO055_head", data['BNO055_head']["accel_x"], data['BNO055_head']['accel_y'], data['BNO055_head']["accel_z"], 
+                                            data['BNO055_head']["quat_w"], data['BNO055_head']["quat_x"], data['BNO055_head']['quat_y'], data['BNO055_head']["quat_z"])
                 if 'BNO055_chest' in data :
-                    self.db.insert_measurement(self.active_session_id, time, "BNO055_chest", data['BNO055_chest']["accel_x"], data['BNO055_chest']['accel_y'], data['BNO055_chest']["accel_z"], 0)
-                    self.db.insert_measurement(self.active_session_id, time, "BNO055_chest", data['BNO055_chest']["quat_x"], data['BNO055_chest']['quat_y'], data['BNO055_chest']["quat_z"], data['BNO055_chest']["quat_w"])
+                    self.db.insert_BNO055('BNO055_chest', self.active_session_id, time, "BNO055_chest", data['BNO055_chest']["accel_x"], data['BNO055_chest']['accel_y'], data['BNO055_chest']["accel_z"], 
+                                            data['BNO055_chest']["quat_w"], data['BNO055_chest']["quat_x"], data['BNO055_chest']['quat_y'], data['BNO055_chest']["quat_z"])
                 if 'BNO055_right_leg' in data :
-                    self.db.insert_measurement(self.active_session_id, time, "BNO055_right_leg", data['BNO055_right_leg']["accel_x"], data['BNO055_right_leg']['accel_y'], data['BNO055_right_leg']["accel_z"], 0)
-                    self.db.insert_measurement(self.active_session_id, time, "BNO055_right_leg", data['BNO055_right_leg']["quat_x"], data['BNO055_right_leg']['quat_y'], data['BNO055_right_leg']["quat_z"], data['BNO055_right_leg']["quat_w"])
+                    self.db.insert_BNO055('BNO055_right_leg', self.active_session_id, time, "BNO055_right_leg", data['BNO055_right_leg']["accel_x"], data['BNO055_right_leg']['accel_y'], 
+                                          data['BNO055_right_leg']["accel_z"], data['BNO055_right_leg']["quat_w"], data['BNO055_right_leg']["quat_x"], data['BNO055_right_leg']['quat_y'], 
+                                          data['BNO055_right_leg']["quat_z"])
                 if 'BNO055_left_leg' in data :
-                    self.db.insert_measurement(self.active_session_id, time, "BNO055_left_leg", data['BNO055_left_leg']["accel_x"], data['BNO055_left_leg']['accel_y'], data['BNO055_left_leg']["accel_z"], 0)
-                    self.db.insert_measurement(self.active_session_id, time, "BNO055_left_leg", data['BNO055_left_leg']["quat_x"], data['BNO055_left_leg']['quat_y'], data['BNO055_left_leg']["quat_z"], data['BNO055_left_leg']["quat_w"])
+                    self.db.insert_BNO055('BNO055_left_leg', self.active_session_id, time, "BNO055_left_leg", data['BNO055_left_leg']["accel_x"], data['BNO055_left_leg']['accel_y'], 
+                                          data['BNO055_left_leg']["accel_z"], data['BNO055_left_leg']["quat_w"], data['BNO055_left_leg']["quat_x"], data['BNO055_left_leg']['quat_y'], 
+                                          data['BNO055_left_leg']["quat_z"])
         else :
             print("No session started. Measures not registered.")        
 

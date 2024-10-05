@@ -1,7 +1,7 @@
 from Database import Database
 from mqtt_client import MQTTClient
 from data_handler import DataHandler
-# from stats_calculator import RealTimeStatistics
+from stats_calculator import RealTimeStatistics
 # from stats_calculator import RealTimePlotter
 
 def main() :
@@ -24,6 +24,10 @@ def main() :
                 else :
                     data_handler.create_new_session(command2)
                 print("New session started.")
+                
+                show_stats = RealTimeStatistics(db)
+                show_stats.pace()
+                
             elif command == "stop":
                 data_handler.close_session()
                 print("Session ended.")
