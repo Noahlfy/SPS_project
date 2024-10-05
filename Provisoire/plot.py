@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 import json
 import math
+import os
 
 def plot(name) : 
-    path = "Data.json"
+    path = os.path.join("..", "Data.json")
     with open(path + "/" + name + ".json") as f :
         data = json.load(f)
     
@@ -31,7 +32,6 @@ def plot(name) :
     plt.show()
     return None
 
-plot("data_test1")
 
 
 
@@ -40,7 +40,7 @@ plot("data_test1")
 
 # To plot the values not correctly implemented
 def plot2(name) :
-    path = "Data_test1"
+    path = os.path.join("..", "Data.json")
 
     with open(path + "/" + name + ".json") as f :
         data = json.load(f)
@@ -76,3 +76,4 @@ def plot2(name) :
     plt.show()
     return None
 
+plot2("data_passage_au_sol")

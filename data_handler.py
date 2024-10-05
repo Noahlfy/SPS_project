@@ -30,12 +30,31 @@ class DataHandler:
         if self.active_session_id is not None : 
             print("Processing data : ", data)
             time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            
             with self.lock:  # Utilisation du verrou lors de l'accès à la base
                 print(f"Inserting measures for session {self.get_last_session_id()}")
-                self.db.insert_measurement(self.active_session_id, time, data['accel_x'], data['accel_y'], data['accel_z'], data['quat_w'], data['quat_x'], data['quat_y'], data['quat_z'])
+                
+                if 'max30102' in data :
+                    self.db.insert_measurement(self.active_session_id, time, "MAX30102", data['MAX30102']["SpO2"], data['MAX30102']['BPM'], 0, 0)
+                if 'BMP280' in data :
+                    self.db.insert_measurement(self.active_session_id, time, "BMP280", data['BMP280']["T"], data['BMP280']['P'], data['BMP280']['altitude'], 0)                   
+                if 'BNO055_head' in data :
+                    self.db.insert_measurement(self.active_session_id, time, "BNO055_head", data['BNO055_head']["accel_x"], data['BNO055_head']['accel_y'], data['BNO055_head']["accel_z"], 0)
+                    self.db.insert_measurement(self.active_session_id, time, "BNO055_head", data['BNO055_head']["quat_x"], data['BNO055_head']['quat_y'], data['BNO055_head']["quat_z"], data['BNO055_head']["quat_w"])
+                if 'BNO055_chest' in data :
+                    self.db.insert_measurement(self.active_session_id, time, "BNO055_chest", data['BNO055_chest']["accel_x"], data['BNO055_chest']['accel_y'], data['BNO055_chest']["accel_z"], 0)
+                    self.db.insert_measurement(self.active_session_id, time, "BNO055_chest", data['BNO055_chest']["quat_x"], data['BNO055_chest']['quat_y'], data['BNO055_chest']["quat_z"], data['BNO055_chest']["quat_w"])
+                if 'BNO055_right_leg' in data :
+                    self.db.insert_measurement(self.active_session_id, time, "BNO055_right_leg", data['BNO055_right_leg']["accel_x"], data['BNO055_right_leg']['accel_y'], data['BNO055_right_leg']["accel_z"], 0)
+                    self.db.insert_measurement(self.active_session_id, time, "BNO055_right_leg", data['BNO055_right_leg']["quat_x"], data['BNO055_right_leg']['quat_y'], data['BNO055_right_leg']["quat_z"], data['BNO055_right_leg']["quat_w"])
+                if 'BNO055_left_leg' in data :
+                    self.db.insert_measurement(self.active_session_id, time, "BNO055_left_leg", data['BNO055_left_leg']["accel_x"], data['BNO055_left_leg']['accel_y'], data['BNO055_left_leg']["accel_z"], 0)
+                    self.db.insert_measurement(self.active_session_id, time, "BNO055_left_leg", data['BNO055_left_leg']["quat_x"], data['BNO055_left_leg']['quat_y'], data['BNO055_left_leg']["quat_z"], data['BNO055_left_leg']["quat_w"])
         else :
-            print("No session started. Measures not registered.")
+            print("No session started. Measures not registered.")        
 
+    
     def create_new_session(self, session_name):
         start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         new_session_id = self.get_last_session_id() + 1
@@ -52,3 +71,5 @@ class DataHandler:
             ''', (end_time, session_id))
         self.connection.commit()
         self.active_session_id = None
+
+    

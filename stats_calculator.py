@@ -28,9 +28,9 @@ class RealTimeStatistics:
         self.pace = [0]                                 # To avoid cases where a function tries to use an element that doesn't exist
         self.velocities = [0]                           # Contains the velocities we mesure, without any modification, mainly to compute the distance
         self.distance = 0
-        
-        
-        
+
+    
+    
     def start_timer(self):
         start_time =  self.sessions.loc[self.sessions['session_id'] == self.active_session_id, 'start_time'].values[0], 
         try : 
@@ -41,11 +41,11 @@ class RealTimeStatistics:
         except KeyboardInterrupt :
             print('\nTimer stopped.')
     
+    
     def compute_dt(self):
         if len(self.measurements) < 2:
             return 0.5  
-
-        last_timestamp = self.measurements.iloc[-1]['time']
+        last_timestamp = self.measurements.loc[self.measurements["BNO055_head"] = "accel_x", :].iloc[-1]['time']
         previous_timestamp = self.measurements.iloc[-2]['time']
         dt = (last_timestamp - previous_timestamp).total_seconds()  
         return dt if dt > 0 else 0.5  
@@ -67,7 +67,7 @@ class RealTimeStatistics:
         if len(self.acceleration) > max_size :
             self.acceleration.pop(0)
 
-    
+
     # We have to take a sufficient amount of data 
     def compute_pace(self, window_size=10, max_size = 100):
         dt = self.compute_dt()
