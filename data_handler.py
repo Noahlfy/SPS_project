@@ -35,7 +35,7 @@ class DataHandler:
             with self.lock:  # Utilisation du verrou lors de l'accès à la base
                 print(f"Inserting measures for session {self.get_last_session_id()}")
                 
-                if 'max30102' in data :
+                if 'MAX30102' in data :
                     self.db.insert_MAX30102(self.active_session_id, time, data['MAX30102']["SpO2"], data['MAX30102']['BPM'])
                 if 'BMP280' in data :
                     self.db.insert_BMP280(self.active_session_id, time, data['BMP280']["temperature"], data['BMP280']['pressure'], data['BMP280']['altitude'])                   
