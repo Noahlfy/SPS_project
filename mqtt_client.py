@@ -35,7 +35,7 @@ class MQTTClient:
     def on_message(self, client, userdata, msg) :
         data = json.loads(msg.payload.decode())
         self.data_handler.process_data(data)
-        
+                
     def start(self):
         self.client.connect(self.broker_address, 1883, 60)
         self.client.loop_start()  # Utilisation de loop_start pour éviter un blocage

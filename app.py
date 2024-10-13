@@ -13,74 +13,46 @@ import sqlite3
 
 app = Flask(__name__)
 
-db = Database("database.db")
-data_handler = DataHandler(db)
-mqtt_client = MQTTClient("172.20.10.10", "esp32/output", data_handler)
 
-mqtt_client.start()
+db = Database('database.db')
+data_handler = DataHandler(db)
+mqtt_client = MQTTClient("localhost", "esp32/output", data_handler)
+
 db.create_tables()
 
-# Variables globales pour gérer l'état de la session
-session_active = False
-data_thread = None
-session_name = ""
+@app.route('/start_session', methods=['POST'])
+def start_session():
+    session_name = request.form.get('session_name', 'Default Session')
+    if session_name == "" :
+        session_name = session_name = "Session_" + str(data_handler.get_last_session_id())
+    data_handler.create_new_session(session_name)
+    
+    # Démarrer le client MQTT dans un thread séparé
+    threading.Thread(target=mqtt_client.start).start()
+    print(f"Data collection started for session: {session_name}")
+    return "Data collection started!"
 
-def process_data():
-    global session_active
-    while session_active:
-        # Code pour collecter des données en continu
-        print("Collecting data...")
-        time.sleep(1)  # Simule un délai entre chaque collecte
+@app.route('/pause_session', methods=['POST'])
+def pause_session():
+    # Logique pour mettre la session en pause (si nécessaire)
+    data_handler.pause_session()
+    return "Session paused!"
 
-@app.route('/api/session', methods=['POST'])
-def session_control():
-    global session_active, data_thread, session_name
-
-    data = request.json
-    action = data.get('action')
-
-    if action == 'start':
-        session_name = data.get('sessionName', "")
-        print('Code started')
-        if session_name == "":
-            session_name = "Session_" + str(data_handler.get_last_session_id())
-        
-        # Démarrer une nouvelle session
-        data_handler.create_new_session(session_name)
-        session_active = True
-
-        # Démarrer un thread pour la collecte des données
-        data_thread = threading.Thread(target=process_data)
-        data_thread.start()
-
-        return jsonify({'status': 'session started'}), 200
-
-    elif action == 'pause':
-        session_active = False
-        data_handler.pause_session()
-        return jsonify({'status': 'session paused'}), 200
-
-    elif action == 'exit':
-        session_active = False
-        data_handler.pause_session()
-        return jsonify({'status': 'session stopped'}), 200
-
-    else:
-        return jsonify({'error': 'Invalid action'}), 400
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
+@app.route('/stop_session', methods=['POST'])
+def stop_session():
+    mqtt_client.stop()
+    data_handler.close_session()
+    return "Data collection stopped and session closed!"
 
 
 # Route pour la page Dashboard
 @app.route('/')
-@app.route('/dashboard')
+@app.route('/index.html')
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template('index.html')
 
 # Route pour la page Database
-@app.route('/database')
+@app.route('/database.html')
 def database():
     return render_template('database.html')
 

@@ -11,19 +11,37 @@ function updateButtonState(buttonId, text, bgColor, textColor, borderColor) {
     button.style.borderColor = borderColor;
 }
 
-function sendActionToBackend(action) {
-    return fetch('/api/session', {
-        method: 'POST',
+function sendActionToBackend(action, sessionName = null) {
+    let url;
+    let method = 'POST';
+    let body = {};
+
+    switch(action) {
+        case 'start':
+            url = '/start_session';
+            body = { session_name: sessionName };  // Envoi du nom de la session si défini
+            break;
+        case 'pause':
+            url = '/pause_session';
+            break;
+        case 'exit':
+            url = '/stop_session';
+            break;
+        default:
+            console.error('Unknown action:', action);
+            return Promise.reject('Unknown action');
+    }
+    return fetch(url, {
+        method: method,
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ action: action })
+        body: JSON.stringify(body)
     })
     .then(response => response.json())
-    .catch(error => {
-        console.error(`Error while sending action "${action}":`, error);
-    });
+    .catch(error => console.error('Error sending action to backend:', error));
 }
+
 
 function startDataCollection() {
     if (sessionPaused) {
@@ -33,10 +51,10 @@ function startDataCollection() {
         updateButtonState("stop-button", "Stop", "red", "white", "red");
         document.getElementById("start-button").disabled = true;
 
-        // Envoyer l'action "start" au back-end
+        // Envoyer l'action "pause" au back-end
         sendActionToBackend('start')
         .then(data => {
-            console.log('Session started:', data);
+            console.log('Session resumed:', data);
         });
     } else {
         // Démarrer une nouvelle session
@@ -58,34 +76,22 @@ function startDataCollection() {
                 console.log('Session Name:', sessionName);
                 sendActionToBackend('start', sessionName).then(data => {
                     console.log('Session started with name:', sessionName);
-
-                    // Retirer le champ de texte après soumission
-                    sessionInput.remove();
+                    sessionInput.remove();  // Retirer le champ de texte après soumission
                 });
             }
         });
 
-        // Ajouter l'élément à une partie spécifique de la page (par exemple dans un div avec l'id 'session-container')
+        // Ajouter l'élément à une partie spécifique de la page
         const sessionContainer = document.getElementById('session-container');
         sessionContainer.appendChild(sessionInput);
-        
-
-        // Envoyer l'action "start" au back-end
-        sendActionToBackend('start')
-        .then(data => {
-            console.log('Session started:', data);
-
-            // Récupérer le nom de la session
-            const sessionName = document.getElementById('session-name').value;
-            console.log('Session Name:', sessionName);
-        });
     }
+
     document.getElementById("start-button").disabled = true;
 }
 
 function stopDataCollection() {
     if (sessionPaused) {
-        // Exit the session
+        // Arrêter la session
         sessionActive = false;
         updateButtonState("start-button", "Start", "green", "white", "green");
         updateButtonState("stop-button", "Stop", "red", "white", "red");
@@ -95,7 +101,7 @@ function stopDataCollection() {
         });
         document.getElementById("start-button").disabled = true;
     } else {
-        // Pause the session
+        // Mettre la session en pause
         sessionPaused = true;
         updateButtonState("start-button", "Resume", "green", "white", "green");
         updateButtonState("stop-button", "Exit", "red", "white", "red");
