@@ -3,39 +3,13 @@ from mqtt_client import MQTTClient
 from data_handler import DataHandler
 from stats_calculator import RealTimeStatistics
 from flask import Flask
+import threading
+from flask import Flask, request, jsonify, render_template
+import time
+import sqlite3
+
 # from stats_calculator import RealTimePlotter
 
-def main() :
-    
-    # Collect the data with MQTT
-    db = Database("database.db")
-    data_handler = DataHandler(db)
-    mqtt_client = MQTTClient("172.20.10.10", "esp32/output", data_handler)
-    
-    mqtt_client.start()
-    db.create_tables()
-    try:
-        while True:
-            command = input("Tape 'new' pour démarrer une nouvelle session, 'stop' pour arrêter la session actuelle, ou 'exit' pour quitter : ").strip()
-            if command == "new":
-                
-                
-            elif command == "stop":
-                data_handler.close_session()
-                print("Session ended.")
-            elif command == "exit":
-                break
-            print("Sessions: ", db.fetch_all_sessions())
-            print("Measurements: ", db.fetch_all_measurements())
-    except KeyboardInterrupt:
-        print("Interruption par l'utilisateur.")
-        
-    mqtt_client.stop()
-
-
-
-from flask import Flask, render_template, jsonify, request
-import sqlite3
 
 app = Flask(__name__)
 
@@ -46,46 +20,56 @@ mqtt_client = MQTTClient("172.20.10.10", "esp32/output", data_handler)
 mqtt_client.start()
 db.create_tables()
 
-global session_active
+# Variables globales pour gérer l'état de la session
+session_active = False
+data_thread = None
+session_name = ""
 
+def process_data():
+    global session_active
+    while session_active:
+        # Code pour collecter des données en continu
+        print("Collecting data...")
+        time.sleep(1)  # Simule un délai entre chaque collecte
 
-def session_control():
-    data = request.json
-    action = data.get('action')
-        if action == 'start':
-            session_name = data.get('sessionName')
-            if session_name == "" :
-                data_handler.create_new_session("Session_" + str(data_handler.get_last_session_id()))
-            else :
-                data_handler.create_new_session(session_name)        
-        elif action == 'pause':
-            data_handler.pause_session()
-        elif action == 'exit':
-            data_handler.pause_session()
-            break
-        else:
-
-#Start & Stop the data registering
 @app.route('/api/session', methods=['POST'])
 def session_control():
+    global session_active, data_thread, session_name
+
     data = request.json
     action = data.get('action')
 
-        if action == 'start':
-            session_name = data.get('sessionName', "")
-            if session_name == "":
-                session_name = "Session_" + str(data_handler.get_last_session_id())
-            
-            # Démarrer une nouvelle session
-            data_handler.create_new_session(session_name)
-            session_active = True
-            return jsonify({'status': 'session started'}), 200
-        elif action == 'pause':
-            return jsonify({'status': 'session paused'}), 200
-        elif action == 'exit':
-            return jsonify({'status': 'session stopped'}), 200        
-        else:
-            return jsonify({'error': 'Invalid action'}), 400
+    if action == 'start':
+        session_name = data.get('sessionName', "")
+        print('Code started')
+        if session_name == "":
+            session_name = "Session_" + str(data_handler.get_last_session_id())
+        
+        # Démarrer une nouvelle session
+        data_handler.create_new_session(session_name)
+        session_active = True
+
+        # Démarrer un thread pour la collecte des données
+        data_thread = threading.Thread(target=process_data)
+        data_thread.start()
+
+        return jsonify({'status': 'session started'}), 200
+
+    elif action == 'pause':
+        session_active = False
+        data_handler.pause_session()
+        return jsonify({'status': 'session paused'}), 200
+
+    elif action == 'exit':
+        session_active = False
+        data_handler.pause_session()
+        return jsonify({'status': 'session stopped'}), 200
+
+    else:
+        return jsonify({'error': 'Invalid action'}), 400
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 

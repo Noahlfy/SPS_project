@@ -43,11 +43,11 @@ uint32_t red_buffer[100]; // Utilisation de uint32_t pour le buffer rouge
 int bufferLength = BUFFER_SIZE;
 
 // Wi-Fi credentials
-const char* ssid = "AndroidAP7A35";
-const char* password = "+Mt210803+";
+const char* ssid = "iPhone Noah";
+const char* password = "polekeleke";
 
 // Set up the broker
-const char* mqtt_server = "192.168.19.44";
+const char* mqtt_server = " 172.20.10.10";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -84,30 +84,30 @@ void setup() {
     while (1);
   }
   
-  // Initialiser le deuxième BNO055
-  if (!bno2.begin()) {
-    Serial.println("Échec de la connexion au deuxième BNO055 (0x29) !");
-    while (1);
-  }
+  // // Initialiser le deuxième BNO055
+  // if (!bno2.begin()) {
+  //   Serial.println("Échec de la connexion au deuxième BNO055 (0x29) !");
+  //   while (1);
+  // }
 
-  // Initialisation du capteur BMP280
-  if (!bmp.begin(0x77)) {  // Adresse I2C du BMP280 (peut être 0x76 ou 0x77)
-    Serial.println("Erreur de communication avec le BMP280");
-    while (1); // Boucle infinie en cas d'erreur
-  }
+  // // Initialisation du capteur BMP280
+  // if (!bmp.begin(0x77)) {  // Adresse I2C du BMP280 (peut être 0x76 ou 0x77)
+  //   Serial.println("Erreur de communication avec le BMP280");
+  //   while (1); // Boucle infinie en cas d'erreur
+  // }
 
-  // Configuration des paramètres du BMP280
-  bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,  // Mode normal
-                  Adafruit_BMP280::SAMPLING_X2,   // Sur-échantillonnage x2 pour la température
-                  Adafruit_BMP280::SAMPLING_X16,  // Sur-échantillonnage x16 pour la pression
-                  Adafruit_BMP280::FILTER_X16,    // Filtrage x16
-                  Adafruit_BMP280::STANDBY_MS_500);  // Délai d'attente entre mesures 500 ms
+  // // Configuration des paramètres du BMP280
+  // bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,  // Mode normal
+  //                 Adafruit_BMP280::SAMPLING_X2,   // Sur-échantillonnage x2 pour la température
+  //                 Adafruit_BMP280::SAMPLING_X16,  // Sur-échantillonnage x16 pour la pression
+  //                 Adafruit_BMP280::FILTER_X16,    // Filtrage x16
+  //                 Adafruit_BMP280::STANDBY_MS_500);  // Délai d'attente entre mesures 500 ms
 
-  // Initialiser le capteur MAX30102 (HW-605)
-  if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) {
-    Serial.println("Échec de la connexion au MAX30102 !");
-    while (1);
-  }
+  // // Initialiser le capteur MAX30102 (HW-605)
+  // if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) {
+  //   Serial.println("Échec de la connexion au MAX30102 !");
+  //   while (1);
+  // }
   particleSensor.setup(); // Configurer le capteur
   particleSensor.setPulseAmplitudeRed(0x0A);  // Ajuster la LED rouge (affecte la mesure de SpO2)
   particleSensor.setPulseAmplitudeIR(0x0F);  // Puissance LED IR pour la lecture de pouls
