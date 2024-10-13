@@ -132,6 +132,7 @@ class BNO05Sensor:
 #   - y left -> right
 #   - z back -> front
 ## For the percentages, we should find documentation because thesse are approximations
+
 class HeadSensor(BNO05Sensor):
     def __init__(self, db, session_id, player_height=1.80):
         initial_position = (player_height * 0.97, 0, 0)
@@ -152,8 +153,6 @@ class LeftLegSensor(BNO05Sensor):
         initial_position = (player_height * 0.33, -player_width * 0.20, 0)
         super().__init__('BNO055_left_leg', db, session_id, initial_position)
         
-
-
 
 class RealTimeStatistics:
     def __init__(self, db):
@@ -247,14 +246,17 @@ class RealTimeStatistics:
     def SpO2(self):
         return self.MAX30102[-1]["SpO2"]
     
+## CREATE A CLASS CHOC, FOR, WHEN A CHOC HAPPENS, MULTIPLE DATA APPEARS
+## Mettre en place le CUMULATIVE HEAD IMPACT
+## Ne pas oublier BPM et SpO2
+## Notification visuelle et sonore quand le suil est dépassé
+
 
 class Statistics :
     def __init__(self, db) :
         self.db = db
         self.sessions = db.to_dataframe_sessions()
         
-        
-    
 class RealTimePlotter:
     def __init__(self) -> None:
         pass

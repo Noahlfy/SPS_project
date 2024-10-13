@@ -1,0 +1,57 @@
+/* Global Styles */
+body {
+    margin: 0; /* Remove default margin */
+    font-family: 'Roboto', Arial, Helvetica, sans-serif; /* Set font family */
+}
+
+/* Header Styles */
+header {
+    margin-left: 250px; /* Push header to the right of the nav */
+    padding: 20px; /* Add padding */
+}
+
+h1 {
+    color: #000; /* White text color for the header */
+}
+
+
+/* Navigation Styles */
+.nav {
+    width: 200px; /* Set a fixed width for the navigation bar */
+    height: 100vh; /* Full height of the viewport */
+    background-color: #2e2e2e; /* Dark gray background */
+    border-right: 1px solid #4a4a4a; /* Slightly lighter gray for the border */
+    position: fixed; /* Keep it fixed on the left */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    display: flex; /* Use flexbox for vertical alignment */
+    flex-direction: column; /* Stack items vertically */
+    padding-top: 20px; /* Add space at the top */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5); /* Add a subtle shadow effect */
+    font-size: 20px;
+    text-align: center;
+}
+
+/* Navigation Links Styles */
+.nav ul {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove padding */
+    margin: 0; /* Remove margin */
+}
+
+.nav li {
+    margin: 10px 0; /* Add space between items */
+}
+
+.nav a {
+    color: #ffffff; /* White text color */
+    padding: 15px 20px; /* Add padding for links */
+    text-decoration: none; /* Remove underline */
+    transition: background-color 0.3s; /* Smooth background color transition */
+    display: block; /* Make the link fill the entire list item */
+}
+
+.nav a:hover {
+    background-color: #4a4a4a; /* Darker gray background on hover */
+}
+
