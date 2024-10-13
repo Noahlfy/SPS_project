@@ -62,7 +62,10 @@ class DataHandler:
         new_session_id = self.get_last_session_id() + 1
         self.db.insert_session(new_session_id, session_name, start_time, None, 0, 0, 0, 0, 0) 
         self.active_session_id = new_session_id
-            
+    
+    def pause_session(self):
+        return
+                
     def close_session(self):
         end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         session_id = self.get_last_session_id()

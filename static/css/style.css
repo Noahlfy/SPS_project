@@ -2,18 +2,18 @@
 body {
     margin: 0; /* Remove default margin */
     font-family: 'Roboto', Arial, Helvetica, sans-serif; /* Set font family */
+    background-color: #3a3e44; /* Dark gray background */
 }
 
 /* Header Styles */
 header {
-    margin-left: 250px; /* Push header to the right of the nav */
+    margin-left: 200px; /* Push header to the right of the nav */
     padding: 20px; /* Add padding */
 }
 
 h1 {
-    color: #000; /* White text color for the header */
+    color: #000; /* Black text color for the header */
 }
-
 
 /* Navigation Styles */
 .nav {
@@ -55,3 +55,143 @@ h1 {
     background-color: #4a4a4a; /* Darker gray background on hover */
 }
 
+
+/* Sensor Selection Styles */
+.sensor-selection {
+    margin-top: 20px; /* Add space above the selection */
+    text-align: left; /* Align label to the left */
+}
+
+.sensor-select {
+    padding: 10px; /* Add padding */
+    border-radius: 5px; /* Rounded corners */
+    border: 1px solid transparent; /* Remove border */
+    background: linear-gradient(to right, #4169e1, #6a5acd); /* Blue gradient background */
+    color: #ffffff; /* White text color */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    appearance: none; /* Remove default appearance */
+    -webkit-appearance: none; /* Remove default appearance for WebKit browsers */
+    -moz-appearance: none; /* Remove default appearance for Mozilla browsers */
+    transition: background-color 0.3s, border-color 0.3s; /* Smooth transitions */
+}
+
+.sensor-select:hover {
+    background: linear-gradient(to right, #6a5acd, #4169e1); /* Change gradient direction on hover */
+}
+
+/* To remove the default arrow */
+.sensor-selection {
+    position: relative; /* For absolute positioning of the pseudo-element */
+}
+
+.sensor-selection::after {
+    content: ''; /* Empty content for the pseudo-element */
+    position: absolute; /* Position it absolutely */
+    top: 50%; /* Center it vertically */
+    right: 10px; /* Adjust as needed */
+    width: 0; /* No width */
+    height: 0; /* No height */
+    border-left: 5px solid transparent; /* Create a right arrow effect */
+    border-right: 5px solid transparent; /* Create a right arrow effect */
+    border-top: 5px solid transparent; /* No arrow */
+    transform: translateY(-50%); /* Center vertically */
+    pointer-events: none; /* Allow clicks to go through */
+}
+
+
+/* Data Table Styles */
+.data-table {
+    margin-left: 220px; /* Pousse la table à droite de la navigation */
+    padding: 20px; /* Ajoute du padding */
+    width: 81%; /* Largeur de la table */
+    border-collapse: separate; /* Évite que les bordures ne se chevauchent */
+    border-spacing: 0; /* Supprime l'espacement entre les cellules */
+    margin-top: 0px; /* Espace au-dessus de la table */
+    table-layout: auto; /* Laisse le navigateur gérer la largeur des colonnes */
+    position: relative; /* Positionnement relatif */
+    overflow-y: auto; /* Ajoute une barre de défilement verticale si nécessaire */
+}
+
+/* Styles des en-têtes et cellules */
+.data-table th, .data-table td {
+    padding: 10px; /* Ajoute du padding pour les cellules */
+    text-align: left; /* Aligne le texte à gauche */
+    white-space: nowrap; /* Empêche le texte de se diviser en plusieurs lignes */
+}
+
+.data-table thead {
+    color: #3b5998; /* Couleur du texte de l'en-tête */
+    background-color: #ffffff; /* Couleur d'arrière-plan de l'en-tête */
+    font-weight: bold; /* Texte en gras pour l'en-tête */
+    height: 40px; /* Hauteur de l'en-tête */
+    border-radius: 7px; /* Arrondit les coins de l'en-tête */
+}
+
+.data-table tbody tr {
+    height: 30px; /* Hauteur des lignes */
+    margin-bottom: 5px; /* Espace entre les lignes */
+}
+
+.data-table tbody tr:nth-child(even) {
+    background-color: #4169e1; /* Couleur de fond pour les lignes paires */
+}
+
+.data-table tbody tr:nth-child(odd) {
+    background-color: #dcdcdc; /* Couleur de fond pour les lignes impaires */
+}
+
+
+/*
+.data-table {
+    margin-left: 220px; 
+    padding: 20px; 
+    width: 81%; 
+    border-collapse: separate; 
+    border-spacing: 0; 
+    margin-top: 0px; 
+    table-layout: fixed;
+    position: relative; 
+    overflow-y: auto; 
+}
+.data-table th, .data-table td {
+    flex: 1;
+    padding: 10px; 
+    box-sizing: border-box; 
+    white-space: nowrap; 
+}
+
+.data-table thead {
+    color: #3b5998; 
+    background-color: #ffffff; 
+    font-weight: bold; 
+    display: block; 
+    overflow: hidden; 
+    height: 40px; 
+    border-radius: 7px; 
+    margin-bottom: 15px; 
+}
+
+.data-table tr {
+    height: 20px; 
+    margin-bottom: 5px;
+    border-radius: 7px; 
+    display: flex; 
+    overflow: hidden; 
+
+.data-table td {
+    flex: 1; 
+    padding: 10px;
+    box-sizing: border-box; 
+    display: block;
+    text-align: left; 
+}
+
+.data-table tbody tr:nth-child(even) {
+    background-color: #4169e1; 
+}
+
+.data-table tbody tr:nth-child(odd) {
+    background-color: #dcdcdc; 
+}
+*/

@@ -12,11 +12,36 @@
         <ul>
             <li><a href="dashboard.html">Dashboard</a></li>
             <li><a href="database.html">Database</a></li>
-            <li><a href="parameters.html">About</a></li>
+            <li><a href="parameters.html">Parameters</a></li>
         </ul>
     </div>
+
     <header>
-        <h1>Data</h1>
+        <div class="sensor-selection">
+            <select id="sensor-select" class="sensor-select" onchange="updateTableColumns()">
+                <option value="BNO055_head">Head_BNO055</option>
+                <option value="BNO055_chest">Chest_BNO055</option>
+                <option value="BNO055_right_leg">RightLeg_BNO055</option>
+                <option value="BNO055_left_leg">LeftLeg_BNO055</option>
+                <option value="MAX30102">MAX30102</option>
+                <option value="BMP280">BMP280</option>
+            </select>
+        </div>
     </header>
+
+    <table class="data-table">
+        <thead>
+            <tr id="table-header">
+                <!-- Les colonnes seront insérées dynamiquement avec JavaScript -->
+            </tr>
+        </thead>
+        <tbody id="dataBody">
+            <!-- Les données seront insérées dynamiquement avec JavaScript -->
+        </tbody>
+    </table>
+
+
+    <script src="../static/js/app.js"></script>
 </body>
 </html>
+

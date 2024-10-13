@@ -12,11 +12,18 @@
         <ul>
             <li><a href="dashboard.html">Dashboard</a></li>
             <li><a href="database.html">Database</a></li>
-            <li><a href="parameters.html">About</a></li>
+            <li><a href="parameters.html">Parameters</a></li>
         </ul>
     </div>
-    <header>
+
+    <header id="session-container">
         <h1>Dashboard</h1>
+
+        <button id="start-button" class="start-button" onclick="startDataCollection()">Start</button>
+        <button id="stop-button" class="stop-button" onclick="stopDataCollection()">Stop</button>
     </header>
+
+    <script src="../static/js/app.js"></script>
+
 </body>
 </html>
