@@ -7,19 +7,19 @@ searchIcon.addEventListener('click', function() {
     searchInput.focus(); 
 });
 
-
-
-
-
-
 // Load the data from the API
 
 let sessionActive = false;
 let sessionPaused = false;
 document.getElementById("stop-button").disabled = true;
+document.getElementById("stop-button").disabled = true;
 
 function updateButtonState(buttonId, borderColor, text = null, bgColor = null, textColor = null) {
+function updateButtonState(buttonId, borderColor, text = null, bgColor = null, textColor = null) {
     const button = document.getElementById(buttonId);
+    if (text !== null) button.innerHTML = text;
+    if (bgColor !== null) button.style.backgroundColor = bgColor;
+    if (textColor !== null) button.style.color = textColor;
     if (text !== null) button.innerHTML = text;
     if (bgColor !== null) button.style.backgroundColor = bgColor;
     if (textColor !== null) button.style.color = textColor;
@@ -60,9 +60,12 @@ function sendActionToBackend(action, sessionName = null) {
 
 function startDataCollection() {
     document.getElementById("start-button").disabled = true;
+    document.getElementById("start-button").disabled = true;
     if (sessionPaused) {
         // Reprendre la session (après une pause)
         sessionPaused = false;
+        updateButtonState("start-button","green", "Start");
+        updateButtonState("stop-button", "red", "Stop")
         updateButtonState("start-button","green", "Start");
         updateButtonState("stop-button", "red", "Stop")
         // Envoyer l'action "pause" au back-end
@@ -73,6 +76,8 @@ function startDataCollection() {
     } else {
         // Démarrer une nouvelle session
         sessionActive = true;
+        updateButtonState("stop-button", "red", "Pause");
+        document.getElementById("stop-button").disabled = true;
         updateButtonState("stop-button", "red", "Pause");
         document.getElementById("stop-button").disabled = true;
         // Demander le nom de la session
@@ -93,6 +98,7 @@ function startDataCollection() {
                     sessionInput.remove();  // Retirer le champ de texte après soumission
                 });
                 document.getElementById("stop-button").disabled = false;
+                document.getElementById("stop-button").disabled = false;
             }
         });
 
@@ -106,7 +112,10 @@ function stopDataCollection() {
     if (sessionPaused) {
         // Arrêter la session
         sessionPaused = false;
+        sessionPaused = false;
         sessionActive = false;
+        updateButtonState("start-button", "transparent", "Start");
+        updateButtonState("stop-button", "transparent", "Stop");
         updateButtonState("start-button", "transparent", "Start");
         updateButtonState("stop-button", "transparent", "Stop");
 
@@ -116,9 +125,14 @@ function stopDataCollection() {
         document.getElementById("start-button").disabled = false;
         document.getElementById("stop-button").disabled = true;
 
+        document.getElementById("start-button").disabled = false;
+        document.getElementById("stop-button").disabled = true;
+
     } else {
         // Mettre la session en pause
         sessionPaused = true;
+        updateButtonState("start-button", "green", "Resume");
+        updateButtonState("stop-button", "red", "Exit");
         updateButtonState("start-button", "green", "Resume");
         updateButtonState("stop-button", "red", "Exit");
 
@@ -261,7 +275,3 @@ function updateTableData(data, columns) {
         dataBody.appendChild(newRow);
     }
 }
-
-
-
-
