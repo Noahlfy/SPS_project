@@ -6,6 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>App Dashboard</title>
     <link rel="stylesheet" href="../static/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
     <div class="nav">
@@ -18,12 +21,28 @@
 
     <header id="session-container">
         <h1>Dashboard</h1>
-
-        <button id="start-button" class="start-button" onclick="startDataCollection()">Start</button>
-        <button id="stop-button" class="stop-button" onclick="stopDataCollection()">Stop</button>
+        <div class="button-container">
+            <button id="start-button" class="start-button" onclick="startDataCollection()">Start</button>
+            <button id="stop-button" class="stop-button" onclick="stopDataCollection()">Stop</button>
+        </div>
     </header>
 
-    <script src="../static/js/app.js"></script>
+    <div class="graphics container">
+        <div class="box">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorem, ratione?</div>
+        <div class="box">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, aliquid?</div>
+        <div class="box">Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo, fuga.</div>
+        <div class="box">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perspiciatis, iure?</div>
+    </div>
+    <div class="fixed-container"></div>
 
+
+
+    <div style="margin-top:1000px"></div>
+    <div>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo, illum nam nesciunt distinctio id odit. 
+        Consequuntur magnam harum doloribus? Saepe cumque voluptatibus magni iste facere adipisci voluptates ipsa possimus aut.
+    </div>
+
+    <script src="../static/js/app.js"></script>
 </body>
 </html>

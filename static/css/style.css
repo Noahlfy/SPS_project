@@ -1,19 +1,11 @@
 /* Global Styles */
 body {
     margin: 0; /* Remove default margin */
+    padding: 0;
     font-family: 'Roboto', Arial, Helvetica, sans-serif; /* Set font family */
     background-color: #3a3e44; /* Dark gray background */
 }
 
-/* Header Styles */
-header {
-    margin-left: 200px; /* Push header to the right of the nav */
-    padding: 20px; /* Add padding */
-}
-
-h1 {
-    color: #000; /* Black text color for the header */
-}
 
 /* Navigation Styles */
 .nav {
@@ -21,6 +13,7 @@ h1 {
     height: 100vh; /* Full height of the viewport */
     background-color: #2e2e2e; /* Dark gray background */
     border-right: 1px solid #4a4a4a; /* Slightly lighter gray for the border */
+
     position: fixed; /* Keep it fixed on the left */
     top: 0; /* Align to the top */
     left: 0; /* Align to the left */
@@ -30,6 +23,7 @@ h1 {
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5); /* Add a subtle shadow effect */
     font-size: 20px;
     text-align: center;
+    box-sizing: border-box;
 }
 
 /* Navigation Links Styles */
@@ -56,16 +50,106 @@ h1 {
 }
 
 
+/* Header Styles */
+header {
+    margin-left: 200px; /* Push header to the right of the nav */
+    padding: 20px; /* Add padding */
+}
+
+h1 {
+    color: #000; /* Black text color for the header */
+}
+
+
+
+
+
+/* DASHBOARD */
+/* Container for buttons to position them at the top right */
+.button-container {
+    position: fixed; /* Fix the position */
+    top: 40px; /* Distance from the top */
+    right: 40px; /* Distance from the right */
+    display: flex; /* Use flexbox for alignment */
+    gap: 10px; /* Space between buttons */
+}
+
+.start-button {
+    margin-left: 0; /* Remove left margin */
+    padding: 10px; /* Ajoute du padding */
+    border-radius: 5px; /* Coins arrondis */
+    border: 1px solid transparent; /* Supprime la bordure */
+    background: linear-gradient(to right, #4169e1, #6a5acd); /* Dégradé de bleu */
+    color: #ffffff; /* Couleur du texte */
+    font-size: 16px; /* Taille de la police */
+    cursor: pointer; /* Curseur pointeur au survol */
+    appearance: none; /* Supprime l'apparence par défaut */
+    -webkit-appearance: none; /* Supprime l'apparence par défaut pour les navigateurs WebKit */
+    -moz-appearance: none; /* Supprime l'apparence par défaut pour les navigateurs Mozilla */
+    transition: background-color 0.3s, border-color 0.3s; /* Transitions fluides */
+    margin-left: 500px;
+    width: 100px;
+
+}
+
+.stop-button {
+    margin-left: 0; /* Remove left margin */
+    padding: 10px; /* Ajoute du padding */
+    border-radius: 5px; /* Coins arrondis */
+    border: 1px solid transparent; /* Supprime la bordure */
+    background: linear-gradient(to right, #4169e1, #6a5acd); /* Dégradé de bleu */
+    color: #ffffff; /* Couleur du texte */
+    font-size: 16px; /* Taille de la police */
+    cursor: pointer; /* Curseur pointeur au survol */
+    appearance: none; /* Supprime l'apparence par défaut */
+    -webkit-appearance: none; /* Supprime l'apparence par défaut pour les navigateurs WebKit */
+    -moz-appearance: none; /* Supprime l'apparence par défaut pour les navigateurs Mozilla */
+    transition: background-color 0.3s, border-color 0.3s; /* Transitions fluides */
+    width: 100px;
+
+}
+
+
+.graphics-container {
+    flex-grow: 1;
+    margin-left: 200px; /* Push header to the right of the nav */
+    padding: 20px; /* Add padding */
+    box-sizing: border-box;
+}
+
+.box {
+    border-radius: 10px;
+    float: left;
+    /* width: 50%; */
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* 3D human */
+.fixed-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 150%;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+
+/* DATABASE */
 /* Sensor Selection Styles */
 .sensor-selection {
     margin-top: 20px; /* Add space above the selection */
     text-align: left; /* Align label to the left */
 }
 
+
 .sensor-select {
     padding: 10px; /* Add padding */
     border-radius: 5px; /* Rounded corners */
     border: 1px solid transparent; /* Remove border */
+    text-align: center; /* Center the text */
     background: linear-gradient(to right, #4169e1, #6a5acd); /* Blue gradient background */
     color: #ffffff; /* White text color */
     font-size: 16px; /* Font size */
@@ -98,7 +182,6 @@ h1 {
     transform: translateY(-50%); /* Center vertically */
     pointer-events: none; /* Allow clicks to go through */
 }
-
 
 /* Data Table Styles */
 .data-table {
@@ -140,6 +223,7 @@ h1 {
 .data-table tbody tr:nth-child(odd) {
     background-color: #dcdcdc; /* Couleur de fond pour les lignes impaires */
 }
+
 
 
 /*

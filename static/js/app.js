@@ -2,12 +2,13 @@
 
 let sessionActive = false;
 let sessionPaused = false;
+document.getElementById("stop-button").disabled = true;
 
-function updateButtonState(buttonId, text, bgColor, textColor, borderColor) {
+function updateButtonState(buttonId, borderColor, text = null, bgColor = null, textColor = null) {
     const button = document.getElementById(buttonId);
-    button.innerHTML = text;
-    button.style.backgroundColor = bgColor;
-    button.style.color = textColor;
+    if (text !== null) button.innerHTML = text;
+    if (bgColor !== null) button.style.backgroundColor = bgColor;
+    if (textColor !== null) button.style.color = textColor;
     button.style.borderColor = borderColor;
 }
 
@@ -44,13 +45,12 @@ function sendActionToBackend(action, sessionName = null) {
 
 
 function startDataCollection() {
+    document.getElementById("start-button").disabled = true;
     if (sessionPaused) {
         // Reprendre la session (après une pause)
         sessionPaused = false;
-        updateButtonState("start-button", "Start", "green", "white", "green");
-        updateButtonState("stop-button", "Stop", "red", "white", "red");
-        document.getElementById("start-button").disabled = true;
-
+        updateButtonState("start-button","green", "Start");
+        updateButtonState("stop-button", "red", "Stop")
         // Envoyer l'action "pause" au back-end
         sendActionToBackend('start')
         .then(data => {
@@ -59,8 +59,8 @@ function startDataCollection() {
     } else {
         // Démarrer une nouvelle session
         sessionActive = true;
-        updateButtonState("stop-button", "Pause", "red", "white", "red");
-
+        updateButtonState("stop-button", "red", "Pause");
+        document.getElementById("stop-button").disabled = true;
         // Demander le nom de la session
         const sessionInput = document.createElement("input");
         sessionInput.type = "text";
@@ -78,6 +78,7 @@ function startDataCollection() {
                     console.log('Session started with name:', sessionName);
                     sessionInput.remove();  // Retirer le champ de texte après soumission
                 });
+                document.getElementById("stop-button").disabled = false;
             }
         });
 
@@ -85,26 +86,27 @@ function startDataCollection() {
         const sessionContainer = document.getElementById('session-container');
         sessionContainer.appendChild(sessionInput);
     }
-
-    document.getElementById("start-button").disabled = true;
 }
 
 function stopDataCollection() {
     if (sessionPaused) {
         // Arrêter la session
+        sessionPaused = false;
         sessionActive = false;
-        updateButtonState("start-button", "Start", "green", "white", "green");
-        updateButtonState("stop-button", "Stop", "red", "white", "red");
+        updateButtonState("start-button", "transparent", "Start");
+        updateButtonState("stop-button", "transparent", "Stop");
 
         sendActionToBackend('exit').then(data => {
             console.log('Session stopped:', data);
         });
-        document.getElementById("start-button").disabled = true;
+        document.getElementById("start-button").disabled = false;
+        document.getElementById("stop-button").disabled = true;
+
     } else {
         // Mettre la session en pause
         sessionPaused = true;
-        updateButtonState("start-button", "Resume", "green", "white", "green");
-        updateButtonState("stop-button", "Exit", "red", "white", "red");
+        updateButtonState("start-button", "green", "Resume");
+        updateButtonState("stop-button", "red", "Exit");
 
         sendActionToBackend('pause').then(data => {
             console.log('Session paused:', data);
@@ -112,6 +114,63 @@ function stopDataCollection() {
         document.getElementById("start-button").disabled = false;
     }
 }
+
+
+
+// Initialiser la scène, la caméra et le renderer
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth * 0.3 / window.innerHeight, 0.1, 1000); // Ajuster le rapport d'aspect
+const renderer = new THREE.WebGLRenderer({ alpha: true });
+renderer.setSize(window.innerWidth * 0.3, window.innerHeight); // Ajuste la taille du renderer pour correspondre au conteneur fixe
+renderer.setClearColor(0x000000, 0); // Définir la couleur de fond en transparent
+document.querySelector('.fixed-container').appendChild(renderer.domElement);
+
+// Ajouter des contrôles d'orbite
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; // Activer l'amortissement (inertie)
+controls.dampingFactor = 0.25; // Facteur d'amortissement
+controls.enableZoom = true; // Activer le zoom
+
+// Ajouter des lumières supplémentaires
+const ambientLight = new THREE.AmbientLight(0x404040, 10); 
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(0, 1, 1).normalize();
+scene.add(directionalLight);
+
+const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+pointLight.position.set(5, 5, 5);
+scene.add(pointLight);
+
+// Charger le modèle GLTF
+const loader = new THREE.GLTFLoader();
+loader.load('../Animation/character.glb', function(gltf) {
+    const humanModel = gltf.scene;
+    scene.add(humanModel);
+
+
+    
+    // Ajuster l'échelle du modèle
+    humanModel.scale.set(1.9, 1.9, 1.9); // Agrandir le modèle (x1.5 dans chaque dimension)
+
+    // Ajuster la position du modèle
+    humanModel.position.y = -2.5; // Déplacer le modèle vers le bas
+
+    // Positionner la caméra
+    camera.position.z = 5;
+    camera.position.y = 1; // Ajuster la position de la caméra pour mieux aligner le modèle
+
+    // Fonction d'animation
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update(); // Mettre à jour les contrôles
+        renderer.render(scene, camera);
+    }
+    animate();
+}, undefined, function(error) {
+    console.error('Error loading the model:', error);
+});
 
 
 
