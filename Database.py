@@ -106,7 +106,6 @@ class Database:
             time DATETUIME DEFAULT CURRENT_TIMESTAMP,
             temperature REAL,
             pressure REAL,
-            altitude REAL, 
             CONSTRAINT FK_BMP280_session_id FOREIGN KEY (session_id) REFERENCES sessions(session_id)
           )                  
         ''')
@@ -157,11 +156,12 @@ class Database:
         ''', (session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, commotion_risk, fatigue_level))
         self.connection.commit()
         
-    def insert_BNO055(self, sensor_name, session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x , quat_y, quat_z): 
-        query = f'''INSERT INTO {sensor_name} (session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x , quat_y, quat_z)
+    def insert_BNO055(self, sensor_name, session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z): 
+        query = f'''INSERT INTO {sensor_name} (session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)'''
-        self.cursor.execute(query, (sensor_name, session_id, time, session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x , quat_y, quat_z))
+        self.cursor.execute(query, (session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z))
         self.connection.commit()
+
         
     def insert_MAX30102(self, session_id, time, SpO2, BPM) :
         self.cursor.execute('''
@@ -170,11 +170,11 @@ class Database:
         ''', (session_id, time, SpO2, BPM))
         self.connection.commit()
     
-    def insert_BMP280(self, session_id, time, temperature, pressure, altitude) :
+    def insert_BMP280(self, session_id, time, temperature, pressure) :
         self.cursor.execute('''
-        INSERT INTO BMP280 (session_id, time, temperature, pressure, altitude)
+        INSERT INTO BMP280 (session_id, time, temperature, pressure)
         VALUES (?, ?, ?, ?)
-        ''', (session_id, time, temperature, pressure, altitude))
+        ''', (session_id, time, temperature, pressure))
         self.connection.commit()
     
     
@@ -194,4 +194,8 @@ class Database:
 
 
 
-    
+print(f"BNO055_head : {Database('Database.db').fetch_all('BNO055_head')}")
+print(f"BNO055_chest : {Database('Database.db').fetch_all('BNO055_chest')}")
+print(f"BMP280 : {Database('Database.db').fetch_all('BMP280')}")
+
+print(f"MAX30102 : {Database('Database.db').fetch_all('MAX30102')}")

@@ -236,10 +236,7 @@ class RealTimeStatistics:
         
     def Pressure(self):
         return self.BMP280.iloc[-1]["pressure"]
-            
-    def Altitude(self):
-        return self.BMP280.iloc[-1]["altitude"]
-    
+               
     def BPM(self):
         return self.MAX30102[-1]["BPM"]
     

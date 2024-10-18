@@ -16,7 +16,15 @@ app = Flask(__name__)
 
 db = Database('database.db')
 data_handler = DataHandler(db)
-mqtt_client = MQTTClient("localhost", "esp32/output", data_handler)
+# Créer trois instances séparées
+mqtt_client_1 = MQTTClient("localhost", "esp32/output1", data_handler)
+mqtt_client_2 = MQTTClient("localhost", "esp32/output2", data_handler)
+mqtt_client_3 = MQTTClient("localhost", "esp32/output3", data_handler)
+
+# Lancer chaque client
+mqtt_client_1.start()
+mqtt_client_2.start()
+mqtt_client_3.start()
 
 db.create_tables()
 
@@ -28,7 +36,9 @@ def start_session():
     data_handler.create_new_session(session_name)
     
     # Démarrer le client MQTT dans un thread séparé
-    threading.Thread(target=mqtt_client.start).start()
+    threading.Thread(target=mqtt_client_1.start).start()
+    threading.Thread(target=mqtt_client_2.start).start()
+    threading.Thread(target=mqtt_client_3.start).start()    
     print(f"Data collection started for session: {session_name}")
     return "Data collection started!"
 
@@ -40,7 +50,9 @@ def pause_session():
 
 @app.route('/stop_session', methods=['POST'])
 def stop_session():
-    mqtt_client.stop()
+    mqtt_client_1.stop()
+    mqtt_client_2.stop()
+    mqtt_client_3.stop()
     data_handler.close_session()
     return "Data collection stopped and session closed!"
 
@@ -55,6 +67,10 @@ def dashboard():
 @app.route('/database.html')
 def database():
     return render_template('database.html')
+
+@app.route('/session.html')
+def session():
+    return render_template('session.html')
 
 # Route pour la page Parameters (About)
 @app.route('/parameters')

@@ -43,11 +43,11 @@ uint32_t red_buffer[100]; // Utilisation de uint32_t pour le buffer rouge
 int bufferLength = BUFFER_SIZE;
 
 // Wi-Fi credentials
-const char* ssid = "AndroidAP7A35";
-const char* password = "+Mt210803+";
+const char* ssid = "iPhone Noah";
+const char* password = "polekeleke";
 
 // Set up the broker
-const char* mqtt_server = "192.168.19.44";
+const char* mqtt_server = "172.20.10.10";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -90,11 +90,11 @@ void setup() {
     while (1);
   }
 
-  // Initialisation du capteur BMP280
-  if (!bmp.begin(0x77)) {  // Adresse I2C du BMP280 (peut être 0x76 ou 0x77)
-    Serial.println("Erreur de communication avec le BMP280");
-    while (1); // Boucle infinie en cas d'erreur
-  }
+  // // Initialisation du capteur BMP280
+  // if (!bmp.begin(0x77)) {  // Adresse I2C du BMP280 (peut être 0x76 ou 0x77)
+  //   Serial.println("Erreur de communication avec le BMP280");
+  //   while (1); // Boucle infinie en cas d'erreur
+  // }
 
   // Configuration des paramètres du BMP280
   bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,  // Mode normal

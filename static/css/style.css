@@ -16,7 +16,10 @@ header {
     top: 0;  
     left: 0; 
     position: absolute;
-    height: 70px;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    height: 10%;
     width: 100%;
     background-color: #2E2E2E;
     border-top-left-radius:30px;
@@ -42,7 +45,6 @@ header h1 {
 .search-bar{
     display: flex;
     align-items: center;
-    margin-top: 20px;
     height: 35px;
     background-color: #0D0D0D ;
     position: absolute;
@@ -67,18 +69,16 @@ input[name="searchBar"] {
     outline: none;
 }
 
-
 .nav {
     position: absolute;
     margin: 0;
     padding: 0;
-    top: 100px;
-    left: 43px;
+    top: 13.5%;
+    left: 2.5%;
     background-color: #2E2E2E;
-    width: 60px;
-    height: 630px;
+    width: 5%;
+    height: 83%;
     border-radius: 25px;
-
 }
 
 .nav ul{
@@ -86,44 +86,111 @@ input[name="searchBar"] {
     list-style:none;
 }
 .nav li {
-    margin-top: 10px;
+    margin-top: 0%;
+    border: 2px white solid;
 }
 
 .nav .general {
-    margin-top: 30px;
-    margin-left: 8px;
+    margin-top: 0%;
+    margin-left: 20%;
 }
 
 .nav .params {
-    margin-top: 350px;
-    margin-left: 8px;
+    margin-top: 850%;
+    margin-left: 20%;
 }
 
 /* 3D human */
 .fixed-container {
     position: absolute;
     background-color: #2E2E2E;
-    top: 115px;
+    top: 13.5%;
     right: 43px;
     border-radius: 30px;
-    height: 80%;
-    width: 500px;
+    height: 83%;
+    width: 28%;
     z-index: 1000;
     overflow: hidden;
 }
 
 .content {
-    position: relative;
-    border: 20px white;
-    padding: 0;
-    width: 820px;
-    min-height: 100vh;    
-    top: 132px;
-    left: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    border: 3px white   solid;
+    background-color: #2E2E2E;
+    border-radius: 30px;
+    width: 57%;
+    top: 13.5%;
+    left: 9%;
+    height: 83%;
+    overflow: visible; /* Assurez-vous que le contenu débordant est visible */
 }
+
 
 .session {
-    position: inherit;
-    border: 3px white solid;
-
+    display: flex;
+    justify-content: center;
+    border-radius: 20px;
+    background-color: #4a4a4a;
+    height: 70%;
+    width: 89.5%;
+    z-index: 1; 
 }
+
+.start-stop {
+    display: flex;
+    position: inherit;
+    border-radius: 10px;
+    margin-left: 5%;
+    margin-top: 4%;
+    border: 1px white dotted;
+    width: 90%;
+    height: 23%;
+}
+
+#startButton {
+    position: inherit;
+    background-color: green; 
+    color: white;
+    margin-left: 2%;
+    margin-top: 2%;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 130%;
+    font-weight: bold;
+    width: 30%;
+    height: 70%;
+}
+
+.last-session {
+    border: 1px white dotted;
+    border-radius: 10px;
+    width: 90%;
+    float: bottom;
+    margin-left: 5%;
+    height: 57%;
+    margin-top: 20%;
+}
+
+.statistics {
+    border: 3px white solid;
+    display: flex; 
+    gap: 2%;
+    justify-content: space-around; 
+    align-items: center;
+    height: 30%;
+}
+
+
+
+.box {
+    background-color: #4a4a4a;
+    border-radius: 20px;
+    border: white 2px solid;
+    height: 70%;
+}
+
