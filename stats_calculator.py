@@ -157,7 +157,7 @@ class LeftLegSensor(BNO05Sensor):
 class RealTimeStatistics:
     def __init__(self, db):
         self.db = db
-        
+         
         self.active_session_id = DataHandler(db).active_session_id
         
         self.head_sensor = HeadSensor(db, session_id=self.active_session_id)

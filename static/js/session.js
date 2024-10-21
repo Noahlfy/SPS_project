@@ -24,7 +24,7 @@ async function sendActionToBackend(action, sessionName = null) {
         case 'pause':
             url = '/pause_session';
             break;
-        case 'exit':
+        case 'stop':
             url = '/stop_session';
             break;
         default:
@@ -101,7 +101,7 @@ function stopDataCollection() {
         updateButtonState("start-button", "transparent", "Start");
         updateButtonState("stop-button", "transparent", "Stop");
 
-        sendActionToBackend('exit').then(data => {
+        sendActionToBackend('stop').then(data => {
             console.log('Session stopped:', data);
         });
         document.getElementById("start-button").disabled = false;
@@ -110,7 +110,7 @@ function stopDataCollection() {
         // Mettre la session en pause
         sessionPaused = true;
         updateButtonState("start-button", "green", "Resume");
-        updateButtonState("stop-button", "red", "Exit");
+        updateButtonState("stop-button", "red", "stop");
 
         sendActionToBackend('pause').then(data => {
             console.log('Session paused:', data);
@@ -118,3 +118,4 @@ function stopDataCollection() {
         document.getElementById("start-button").disabled = false;
     }
 }
+

@@ -20,8 +20,6 @@ start_button.addEventListener('click', function() {
 
 
 
-
-
 // Initialiser la scène, la caméra et le renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth * 0.3 / window.innerHeight, 0.1, 1000); // Ajuster le rapport d'aspect

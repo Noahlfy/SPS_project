@@ -14,6 +14,33 @@ import sqlite3
 app = Flask(__name__)
 
 
+# Route pour la page Dashboard
+@app.route('/')
+@app.route('/index.html')
+def dashboard():
+    return render_template('index.html')
+
+# Route pour la page Database
+@app.route('/database.html')
+def database():
+    return render_template('database.html')
+
+@app.route('/session.html')
+def session():
+    return render_template('session.html')
+
+@app.route('/commotion.html')
+def commotion():
+    return render_template('commotion.html')
+
+# Route pour la page Parameters (About)
+@app.route('/parameters.html')
+def parameters():
+    return render_template('parameters.html')
+
+
+
+
 db = Database('database.db')
 data_handler = DataHandler(db)
 # Créer trois instances séparées
@@ -30,22 +57,26 @@ db.create_tables()
 
 @app.route('/start_session', methods=['POST'])
 def start_session():
-    session_name = request.form.get('session_name', 'Default Session')
-    if session_name == "" :
-        session_name = session_name = "Session_" + str(data_handler.get_last_session_id())
-    data_handler.create_new_session(session_name)
-    
+    if not data_handler.pause_session :
+        session_name = request.form.get('session_name', 'Default Session')
+        if session_name == "" :
+            session_name = session_name = "Session_" + str(data_handler.get_last_session_id())
+        data_handler.create_new_session(session_name)
+        
     # Démarrer le client MQTT dans un thread séparé
     threading.Thread(target=mqtt_client_1.start).start()
     threading.Thread(target=mqtt_client_2.start).start()
     threading.Thread(target=mqtt_client_3.start).start()    
-    print(f"Data collection started for session: {session_name}")
+
     return "Data collection started!"
 
 @app.route('/pause_session', methods=['POST'])
 def pause_session():
     # Logique pour mettre la session en pause (si nécessaire)
-    data_handler.pause_session()
+    data_handler.pause_session = True
+    mqtt_client_1.stop()
+    mqtt_client_2.stop()
+    mqtt_client_3.stop()
     return "Session paused!"
 
 @app.route('/stop_session', methods=['POST'])
@@ -53,29 +84,10 @@ def stop_session():
     mqtt_client_1.stop()
     mqtt_client_2.stop()
     mqtt_client_3.stop()
+    data_handler.pause_session = False
     data_handler.close_session()
     return "Data collection stopped and session closed!"
 
-
-# Route pour la page Dashboard
-@app.route('/')
-@app.route('/index.html')
-def dashboard():
-    return render_template('index.html')
-
-# Route pour la page Database
-@app.route('/database.html')
-def database():
-    return render_template('database.html')
-
-@app.route('/session.html')
-def session():
-    return render_template('session.html')
-
-# Route pour la page Parameters (About)
-@app.route('/parameters')
-def parameters():
-    return render_template('parameters.html')
 
 # API pour récupérer les données en fonction du capteur sélectionné
 @app.route('/api/data', methods=['GET'])
@@ -97,7 +109,8 @@ def get_data():
     if sensor_type not in sensor_tables:
         return jsonify({'error': 'Invalid sensor type'}), 400
 
-    conn = sqlite3.connect('database.db') 
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row  # Permet d'utiliser des noms de colonnes
     cursor = conn.cursor()
     query = f"SELECT * FROM {sensor_type}"
     params = []

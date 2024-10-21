@@ -20,6 +20,7 @@
             <input type="text" name="searchBar" placeholder="Search" id="searchInput">
         </div>
     </header>
+
     <div class="nav">
         <div class="general">
             <ul>
@@ -56,30 +57,7 @@
         </div>
     </div>
 
-    <div class="sensor-selection">
-        <select id="sensor-select" class="sensor-select" onchange="updateTableColumns()">
-            <option value="BNO055_head">Head BNO055</option>
-            <option value="BNO055_chest">Chest BNO055</option>
-            <option value="BNO055_right_leg">Right Leg BNO055</option>
-            <option value="BNO055_left_leg">Left Leg BNO055</option>
-            <option value="MAX30102">MAX30102</option>
-            <option value="BMP280">BMP280</option>
-        </select>
-    </div>
 
-    <table class="data-table">
-        <thead>
-            <tr id="tableHeader">
-                <!-- Les colonnes seront insérées dynamiquement avec JavaScript -->
-            </tr>
-        </thead>
-        <tbody id="dataBody">
-            <!-- Les données seront insérées dynamiquement avec JavaScript -->
-        </tbody>
-    </table>
-
-
-    <script src="../static/js/database.js"></script>
+    <script src="../static/js/app.py"></script>
 </body>
 </html>
-

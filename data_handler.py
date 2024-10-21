@@ -12,6 +12,7 @@ class DataHandler:
         self.connection = self.db.connection
         self.cursor = self.db.connection.cursor()
         self.active_session_id = None
+        self.pause_session = False
         self.lock = threading.Lock()  # Verrou pour accès concurrent à la base
 
 
@@ -27,11 +28,10 @@ class DataHandler:
         return 0
         
     def process_data(self, data):
-        if self.active_session_id is not None : 
-            print("Processing data : ", data)
+        if self.active_session_id is not None :          
             time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
-            
+            print("process")
             with self.lock:  # Utilisation du verrou lors de l'accès à la base
                 print(f"Inserting measures for session {self.get_last_session_id()}")
                 
@@ -53,18 +53,16 @@ class DataHandler:
                     self.db.insert_BNO055('BNO055_left_leg', self.active_session_id, time, data['BNO055_left_leg']["accel_x"], data['BNO055_left_leg']['accel_y'], 
                                           data['BNO055_left_leg']["accel_z"], data['BNO055_left_leg']["quat_w"], data['BNO055_left_leg']["quat_x"], data['BNO055_left_leg']['quat_y'], 
                                           data['BNO055_left_leg']["quat_z"])
-        else :
-            print("No session started. Measures not registered.")        
+       
 
     
     def create_new_session(self, session_name):
+        print("CRET+ATING NEW SESSION")
         start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         new_session_id = self.get_last_session_id() + 1
         self.db.insert_session(new_session_id, session_name, start_time, None, 0, 0, 0, 0, 0) 
         self.active_session_id = new_session_id
     
-    def pause_session(self):
-        return
                 
     def close_session(self):
         end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")

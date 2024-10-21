@@ -92,7 +92,7 @@ class Database:
         CREATE TABLE IF NOT EXISTS MAX30102 (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_id INTEGER,
-            time DATETUIME DEFAULT CURRENT_TIMESTAMP,
+            time DATETIME DEFAULT CURRENT_TIMESTAMP,
             SpO2 REAL,
             BPM INTEGER,
             CONSTRAINT FK_MAX30102_session_id FOREIGN KEY (session_id) REFERENCES sessions(session_id)
@@ -103,7 +103,7 @@ class Database:
         CREATE TABLE IF NOT EXISTS BMP280 (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_id INTEGER,
-            time DATETUIME DEFAULT CURRENT_TIMESTAMP,
+            time DATETIME DEFAULT CURRENT_TIMESTAMP,
             temperature REAL,
             pressure REAL,
             CONSTRAINT FK_BMP280_session_id FOREIGN KEY (session_id) REFERENCES sessions(session_id)
@@ -158,7 +158,7 @@ class Database:
         
     def insert_BNO055(self, sensor_name, session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z): 
         query = f'''INSERT INTO {sensor_name} (session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)'''
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'''
         self.cursor.execute(query, (session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z))
         self.connection.commit()
 
@@ -177,7 +177,7 @@ class Database:
         ''', (session_id, time, temperature, pressure))
         self.connection.commit()
     
-    
+     
     ## SHOW TABLES
     def fetch_all(self, sensor_name):
         self.cursor.execute(f'SELECT * FROM {sensor_name}')
@@ -193,9 +193,3 @@ class Database:
         self.connection.close()
 
 
-
-print(f"BNO055_head : {Database('Database.db').fetch_all('BNO055_head')}")
-print(f"BNO055_chest : {Database('Database.db').fetch_all('BNO055_chest')}")
-print(f"BMP280 : {Database('Database.db').fetch_all('BMP280')}")
-
-print(f"MAX30102 : {Database('Database.db').fetch_all('MAX30102')}")
