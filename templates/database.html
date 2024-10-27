@@ -58,12 +58,17 @@
 
     <div class="sensor-selection">
         <select id="sensor-select" class="sensor-select" onchange="updateTableColumns()">
+            <option value="sessions">Sessions</option>
             <option value="BNO055_head">Head BNO055</option>
             <option value="BNO055_chest">Chest BNO055</option>
             <option value="BNO055_right_leg">Right Leg BNO055</option>
             <option value="BNO055_left_leg">Left Leg BNO055</option>
             <option value="MAX30102">MAX30102</option>
             <option value="BMP280">BMP280</option>
+        </select>
+        <select id="data-type" class="data-type" onchange="updateTableColumns()"> 
+            <option value="raw">Raw</option>
+            <option value="transformed">Transformed</option>
         </select>
     </div>
 

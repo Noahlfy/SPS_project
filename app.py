@@ -4,15 +4,28 @@ from data_handler import DataHandler
 from stats_calculator import RealTimeStatistics
 from flask import Flask
 import threading
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, g
 import time
 import sqlite3
-
+import json
 # from stats_calculator import RealTimePlotter
 
 
 app = Flask(__name__)
 
+DATABASE = 'database.db'
+
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect(DATABASE)
+    return db
+
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
 
 # Route pour la page Dashboard
 @app.route('/')
@@ -43,6 +56,7 @@ def parameters():
 
 db = Database('database.db')
 data_handler = DataHandler(db)
+# stats = RealTimeStatistics(db)
 # Créer trois instances séparées
 mqtt_client_1 = MQTTClient("localhost", "esp32/output1", data_handler)
 mqtt_client_2 = MQTTClient("localhost", "esp32/output2", data_handler)
@@ -89,6 +103,18 @@ def stop_session():
     return "Data collection stopped and session closed!"
 
 
+def load_json_data() : 
+    with open('action.json') as f :
+        return json.load(f)
+
+## Est-ce qu'il faut que je mette tout dans mon fichier json et que j'actualise à les moments donnés (par exemple toutes les 10 secondes) 
+## ou  que dès qu'on actualise la page cela s'actualise (on perd l'utilisation du fichier json) ????????
+@app.route('/api/update/dashboard', methods=['GET'])
+def get_dashboard():
+    data = load_json_data()  
+    return jsonify(data)
+
+
 # API pour récupérer les données en fonction du capteur sélectionné
 @app.route('/api/data', methods=['GET'])
 def get_data():
@@ -97,6 +123,7 @@ def get_data():
 
     # Dictionnaire pour mapper le capteur à la bonne table dans la base de données
     sensor_tables = {
+        'sessions' : 'sessions',
         'BNO055_head': 'BNO055_head',
         'BNO055_chest': 'BNO055_chest',
         'BNO055_left_leg': 'BNO055_left_leg',
@@ -109,7 +136,7 @@ def get_data():
     if sensor_type not in sensor_tables:
         return jsonify({'error': 'Invalid sensor type'}), 400
 
-    conn = sqlite3.connect('database.db')
+    conn = get_db()
     conn.row_factory = sqlite3.Row  # Permet d'utiliser des noms de colonnes
     cursor = conn.cursor()
     query = f"SELECT * FROM {sensor_type}"

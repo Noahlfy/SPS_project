@@ -14,6 +14,7 @@ class BNO05Sensor:
         self.db = db
         self.name = name
         self.session_id = session_id
+        self.data = db.to_dataframe(name)
 
         self.g_measurements = [0]                            # 0 to avoid cases where a function tries to use an element that doesn't exist
         self.velocities_norm = [0]                           # 0 to avoid cases where a function tries to use an element that doesn't exist 

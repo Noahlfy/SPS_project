@@ -1,4 +1,5 @@
 const sensorheader = {
+    "sessions" : [ 'session_id', 'session_name', 'start_time', 'end_time', 'acceleration_max', 'speed_max', 'total_distance', 'commotion_risk', 'fatigue_level'],
     'BNO055_head':  ['id', 'session_id', 'time', 'accel_x', 'accel_y', 'accel_z', 'quat_w', 'quat_x', 'quat_y', 'quat_z'],
     'BNO055_chest': ['id', 'session_id', 'time', 'accel_x', 'accel_y', 'accel_z', 'quat_w', 'quat_x', 'quat_y', 'quat_z'],
     'BNO055_right_leg': ['id', 'session_id', 'time', 'accel_x', 'accel_y', 'accel_z', 'quat_w', 'quat_x', 'quat_y', 'quat_z'],

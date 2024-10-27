@@ -78,23 +78,23 @@ void setup() {
   setup_wifi();
   client.setServer(mqtt_server, 1883);
 
-  // Initialiser le premier BNO055
-  if (!bno1.begin()) {
-    Serial.println("Échec de la connexion au premier BNO055 (0x28) !");
-    while (1);
-  }
-  
-  // Initialiser le deuxième BNO055
-  if (!bno2.begin()) {
-    Serial.println("Échec de la connexion au deuxième BNO055 (0x29) !");
-    while (1);
-  }
-
-  // // Initialisation du capteur BMP280
-  // if (!bmp.begin(0x77)) {  // Adresse I2C du BMP280 (peut être 0x76 ou 0x77)
-  //   Serial.println("Erreur de communication avec le BMP280");
-  //   while (1); // Boucle infinie en cas d'erreur
+  // // Initialiser le premier BNO055
+  // if (!bno1.begin()) {
+  //   Serial.println("Échec de la connexion au premier BNO055 (0x28) !");
+  //   while (1);
   // }
+  
+  // // Initialiser le deuxième BNO055
+  // if (!bno2.begin()) {
+  //   Serial.println("Échec de la connexion au deuxième BNO055 (0x29) !");
+  //   while (1);
+  // }
+
+  // Initialisation du capteur BMP280
+  if (!bmp.begin(0x77)) {  // Adresse I2C du BMP280 (peut être 0x76 ou 0x77)
+    Serial.println("Erreur de communication avec le BMP280");
+    while (1); // Boucle infinie en cas d'erreur
+  }
 
   // Configuration des paramètres du BMP280
   bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,  // Mode normal
@@ -103,11 +103,12 @@ void setup() {
                   Adafruit_BMP280::FILTER_X16,    // Filtrage x16
                   Adafruit_BMP280::STANDBY_MS_500);  // Délai d'attente entre mesures 500 ms
 
-  // Initialiser le capteur MAX30102 (HW-605)
-  if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) {
-    Serial.println("Échec de la connexion au MAX30102 !");
-    while (1);
-  }
+  // // Initialiser le capteur MAX30102 (HW-605)
+  // if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) {
+  //   Serial.println("Échec de la connexion au MAX30102 !");
+  //   while (1);
+  // }
+
   particleSensor.setup(); // Configurer le capteur
   particleSensor.setPulseAmplitudeRed(0x0A);  // Ajuster la LED rouge (affecte la mesure de SpO2)
   particleSensor.setPulseAmplitudeIR(0x0F);  // Puissance LED IR pour la lecture de pouls
