@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.search-bar {
+    
+}
+
+nav {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    align-items: flex-start;
+
+    border: 2px white solid;
+    margin: 0;
+    padding: 0;
+    top: 13.5%;
+    left: 2.15%;
+    background-color: #2E2E2E;
+    width: 10%;
+    height: 83%;
+    border-radius: 25px;
+}
+
