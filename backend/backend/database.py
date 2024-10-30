@@ -61,7 +61,7 @@ class Database:
             time DATETIME DEFAULT CURRENT_TIMESTAMP,
             accel_x REAL,
             accel_y REAL,
-            accel_z REAl,
+            accel_z REAL,
             quat_w REAL,                 
             quat_x REAL,                 
             quat_y REAL,                 
@@ -123,9 +123,9 @@ class Database:
     def delete_session(self, session_id):
         tables = ['sessions', 'BNO055_head', 'BNO055_chest', 'BNO055_right_leg', 'BNO055_left_leg', 'MAX30102', 'BMP280']
         
-        for table in tables :
-            self.cursor.execute(f"DELETE FROM {table} WHERE session_id = ?,", (session_id,))
-        self.connection.commit() 
+        for table in tables:
+            self.cursor.execute(f"DELETE FROM {table} WHERE session_id = ?", (session_id,))
+        self.connection.commit()
     
     
     ## WE COULD THINK OF A FUNCTION THAT DELETES A SINGLE MEASUREMENT IN FUNCTION OF THE TIME BUT NOT VERY USEFUL SINCE WE NEED TO KNOW THE EXACT TIME
