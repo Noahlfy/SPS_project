@@ -21,4 +21,4 @@ class SessionSerializer(serializers.ModelSerializer):
             stop_mqtt_clients()
         elif status == 'completed':
             close_mqtt_clients()
-        return instance
+        return super().update(instance, validated_data)

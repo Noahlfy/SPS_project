@@ -19,7 +19,7 @@ class DataHandler:
     def get_last_session_id(self):
         if self.db.check_table_exists("sessions") == True : 
             self.cursor.execute('''
-                SELECT MAX(session_id) FROM sessions
+                SELECT MAX(session_id) FROM training_sessions
             ''')
             last_session_id = self.cursor.fetchone()[0]
             if last_session_id is None :
@@ -68,7 +68,7 @@ class DataHandler:
         end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         session_id = self.get_last_session_id()
         self.cursor.execute('''
-            UPDATE sessions
+            UPDATE training_sessions
             SET end_time = ?
             WHERE session_id = ?
             ''', (end_time, session_id))
