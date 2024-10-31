@@ -1,0 +1,192 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+
+:root{
+    --secondary-color: #005186;
+    --primary-color : #007cc3; 
+    background-color: black;
+}
+
+.search-bar{
+    position: fixed;
+    background-color: #2E2E2E;
+    width: 100%;
+    height: 10%;
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-element {
+    border: 4px white solid;
+    width: 25%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 5px;
+}
+
+.search-element input {
+    margin-left: 3%;
+    flex: 0.9;
+}
+
+nav {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    width: 6%;
+    height: 83%;
+    margin-top: 7%;
+    margin-left: 3%;
+
+    background-color: #2E2E2E;
+    border-radius: 50px;
+}
+
+.nav-icon {
+    margin-top: 20%;
+}
+
+.dashboard-container {
+    position: fixed;
+
+    width: 50%;
+    height: 83%;
+    margin-left: 13%;
+    margin-top: 7% ;
+
+    background-color: #2E2E2E;
+    color: white;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sessions {
+    height: 60%;
+    width: 93%;
+    margin-top: 3% ;
+    background-color: #4a4a4a;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.start {
+    height: 20%;
+    width: 90%;
+    margin: 3% 4% 1% 4%;
+    padding: 0%;
+    border: 1px white dotted;
+    border-radius: 40px;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.start span {
+    margin-left: 4%;
+    margin-right: 17%;
+}
+#start-button {
+
+    width: 35%;
+    height: 80%;
+    background-color: green;
+    font-size: 200%;
+    border-radius: 40px;
+
+}
+
+.last-session-text {
+    color: orange;
+    margin-top: 1%;
+    margin-bottom: 0%;
+}
+
+.last-session {
+    height: 71%;
+    width: 90%;
+    margin: 0% 4% 0% 4%;
+    margin-bottom: 4%;
+    border: 1px white dotted;
+    border-radius: 20px;
+}
+
+.last-session ul {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.last-session li {
+    height: 29%;
+    padding: 5px 0px 5px 25px;
+    display: flex;
+    align-items: center;
+}
+
+.global-statistics {
+    height: 30%;
+    width: 93%;
+    margin-top: 3%;
+    background-color: #4a4a4a;
+    border-radius: 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 2%;
+}
+
+.box{
+    margin-left: 2%;
+    padding: 8px;
+    width: 33.3%;
+    height: 88%;
+    border: 1px white dotted;
+    border-radius: 13px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.box .data-name {
+    height: 25%;
+}
+
+.box .data-value {
+    padding: 15px;
+    height: 65%;
+    font-size: 250%;
+}
+
+/* #4a4a4a */
+
+.player-container {
+    position: fixed;
+    background-color: #2E2E2E;
+    margin-top: 7%;
+    right: 43px;
+    border-radius: 30px;
+    height: 83%;
+    width: 28%;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+

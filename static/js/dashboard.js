@@ -14,13 +14,13 @@ function updateDashboard() {
     .then(data => {
         const last_session_state = data.dashboard.last_session_state;
         const last_session_risk = data.dashboard.last_session_risk;
-        const commotion_passport = data.dashboard.commotion_passport;
+        const concussion_passport = data.dashboard.concussion_passport;
         const average_activity_during_sessions = data.dashboard.average_activity_during_sessions;
         const average_heart_rate = data.dashboard.average_heart_rate;
 
         document.getElementById('last_session_state').innertext = last_session_state; 
         document.getElementById('last-session-risk').innertext = last_session_risk;
-        document.getElementById('commotion_passport').innertext = commotion_passport;
+        document.getElementById('concussion_passport').innertext = concussion_passport;
         document.getElementById('average_activity_during_sessions').innertext = average_activity_during_sessions;
         document.getElementById('average_heart_rate').innertext = average_heart_rate;
     })

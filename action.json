@@ -4,7 +4,7 @@
         "last_session_state" : 0,
         "last_session_risk" : 0,
         "number_of_rest_days" : 0,
-        "commotion_passport" : 0,
+        "Concussion_passport" : 0,
         "average_activity_during_sessions" : 0,
         "average_heart_rate" : 0
     },
@@ -14,7 +14,7 @@
     "session" : {
 
     },
-    "commotion" : {
+    "Concussion" : {
 
     },
     "parameters" : {

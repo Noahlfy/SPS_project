@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ("acceleration_max", models.FloatField(blank=True, null=True)),
                 ("speed_max", models.FloatField(blank=True, null=True)),
                 ("total_distance", models.FloatField(blank=True, null=True)),
-                ("commotion_risk", models.IntegerField(blank=True, null=True)),
+                ("concussion_risk", models.IntegerField(blank=True, null=True)),
                 ("fatigue_level", models.FloatField(blank=True, null=True)),
                 (
                     "status",

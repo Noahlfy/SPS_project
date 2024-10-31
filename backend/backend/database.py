@@ -17,7 +17,7 @@ class Database:
             acceleration_max REAL,
             speed_max REAL,
             total_distance REAL,
-            commotion_risk INTEGER,
+            concussion_risk INTEGER,
             fatigue_level REAL
         )
         ''')
@@ -147,11 +147,11 @@ class Database:
             return False
              
     ## INSERTS
-    def insert_session(self, session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, commotion_risk, fatigue_level):
+    def insert_session(self, session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, concussion_risk, fatigue_level):
         self.cursor.execute('''
-            INSERT INTO sessions (session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, commotion_risk, fatigue_level)
+            INSERT INTO sessions (session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, concussion_risk, fatigue_level)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, commotion_risk, fatigue_level))
+        ''', (session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, concussion_risk, fatigue_level))
         self.connection.commit()
         
     def insert_BNO055(self, sensor_name, session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z): 
