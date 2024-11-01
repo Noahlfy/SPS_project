@@ -13,7 +13,7 @@ class Session(models.Model):
     acceleration_max = models.FloatField(null=True, blank=True)
     speed_max = models.FloatField(null=True, blank=True)
     total_distance = models.FloatField(null=True, blank=True)
-    concussion_risk = models.IntegerField(null=True, blank=True)
+    concussion_risk = models.FloatField(null=True, blank=True)
     fatigue_level = models.FloatField(null=True, blank=True)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
 

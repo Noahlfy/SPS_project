@@ -6,4 +6,4 @@ class RightLegSerializer(serializers.ModelSerializer):
     class Meta:
         model = RightLeg
         fields = "__all__"
-        read_only_fields = "time"
+        read_only_fields = ["time"]

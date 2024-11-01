@@ -12,11 +12,18 @@ class SessionSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-        start_mqtt_clients()
-        return Session.objects.create(**validated_data)
+        Session.objects.all().update(status='completed')
+        # close_mqtt_clients()
+        session = Session.objects.create(**validated_data)
+        start_mqtt_clients(session.session_id)
+        return session
 
     def update(self, instance, validated_data):
         status = validated_data.get('status', None)
+        if instance.status == 'completed':
+            raise serializers.ValidationError('Session is already completed')
+        if status == 'active':
+            start_mqtt_clients(instance.session_id)
         if status == 'paused':
             stop_mqtt_clients()
         elif status == 'completed':

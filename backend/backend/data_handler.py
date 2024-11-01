@@ -17,7 +17,7 @@ class DataHandler:
 
 
     def get_last_session_id(self):
-        if self.db.check_table_exists("sessions") == True : 
+        if self.db.check_table_exists("training_sessions") == True : 
             self.cursor.execute('''
                 SELECT MAX(session_id) FROM training_sessions
             ''')
@@ -53,6 +53,8 @@ class DataHandler:
                     self.db.insert_BNO055('BNO055_left_leg', self.active_session_id, time, data['BNO055_left_leg']["accel_x"], data['BNO055_left_leg']['accel_y'], 
                                           data['BNO055_left_leg']["accel_z"], data['BNO055_left_leg']["quat_w"], data['BNO055_left_leg']["quat_x"], data['BNO055_left_leg']['quat_y'], 
                                           data['BNO055_left_leg']["quat_z"])
+        else :
+            print("No active session")
        
 
     

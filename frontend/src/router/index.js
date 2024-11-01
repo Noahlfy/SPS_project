@@ -4,8 +4,8 @@ import DashboardView from '@/views/DashboardView.vue';
 import ConcussionView from '@/views/concussionView.vue';
 import DatabaseView from '@/views/DatabaseView.vue';
 import ParametersView from '@/views/ParametersView.vue';
-import ActiveSessionView from '@/views/ActiveSessionView.vue';
-import InactiveSessionView from '@/views/InactiveSessionView.vue';
+import SessionView from '@/views/SessionView.vue';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,15 +26,11 @@ const router = createRouter({
       component: DatabaseView,
     },
     {
-      path: '/session/active',
-      name: 'SessionActive',
-      component: ActiveSessionView,
+      path: '/session',
+      name: 'Session',
+      component: SessionView,
     },
-    {
-      path: '/session/inactive',
-      name: 'SessionInactive',
-      component: InactiveSessionView,
-    },
+
     {
       path: '/parameters',
       name: 'Parameters',

@@ -30,8 +30,8 @@ const isActiveLink = (routePath) => {
             </RouterLink>
         </div>
         <div class="nav-icon">
-            <RouterLink to="/session/active" 
-            :class="[isActiveLink('/session/active')
+            <RouterLink to="/session" 
+            :class="[isActiveLink('/session')
             ? 'text-primary'
             : 'text-white',
             'hover:text-secondary'

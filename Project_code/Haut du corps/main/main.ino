@@ -46,11 +46,11 @@ uint32_t red_buffer[100]; // Utilisation de uint32_t pour le buffer rouge
 int bufferLength = BUFFER_SIZE;
 
 // Wi-Fi credentials
-const char* ssid = "iPhone Noah";
-const char* password = "polekeleke";
+const char* ssid = "fbx_lafay";
+const char* password = "chataigne";
 
 // Set up the broker
-const char* mqtt_server = "172.20.10.10";
+const char* mqtt_server = "192.168.1.51";
 
 WiFiClient espClient;
 PubSubClient client(espClient);

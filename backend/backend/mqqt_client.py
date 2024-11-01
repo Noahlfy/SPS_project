@@ -17,7 +17,7 @@ def start_mosquitto():
 
 
 # Appelle la fonction pour démarrer Mosquitto
-# start_mosquitto()
+start_mosquitto()
 
 
 class MQTTClient:
@@ -35,12 +35,14 @@ class MQTTClient:
         print("Connected with result code " + str(rc))
 
     def on_message(self, client, userdata, msg):
+        print(msg.topic + " " + str(msg.payload))
         data = json.loads(msg.payload.decode())
         self.data_handler.process_data(data)
 
     def start(self):
         self.client.connect(self.broker_address, 1883, 60)
         self.client.loop_start()  # Utilisation de loop_start pour éviter un blocage
+        print("MQTT Client started.")
 
     def stop(self):
         self.client.loop_stop()

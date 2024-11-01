@@ -6,4 +6,4 @@ class HeartRateSerializer(serializers.ModelSerializer):
     class Meta:
         model = HeartRate
         fields = "__all__"
-        read_only_fields = "time"
+        read_only_fields = ["time"]

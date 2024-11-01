@@ -113,7 +113,7 @@ class Database:
     
     ## DELETE ALL TABLES
     def delete_tables(self):
-        tables = ['sessions', 'BNO055_head', 'BNO055_chest', 'BNO055_right_leg', 'BNO055_left_leg', 'MAX30102', 'BMP280']
+        tables = ['training_sessions', 'BNO055_head', 'BNO055_chest', 'BNO055_right_leg', 'BNO055_left_leg', 'MAX30102', 'BMP280']
         
         for table in tables :
             self.cursor.execute(f'DROP TABLE IF EXISTS {table}')
@@ -121,7 +121,7 @@ class Database:
         
     ## DELETE SESSIONS
     def delete_session(self, session_id):
-        tables = ['sessions', 'BNO055_head', 'BNO055_chest', 'BNO055_right_leg', 'BNO055_left_leg', 'MAX30102', 'BMP280']
+        tables = ['training_sessions', 'BNO055_head', 'BNO055_chest', 'BNO055_right_leg', 'BNO055_left_leg', 'MAX30102', 'BMP280']
         
         for table in tables:
             self.cursor.execute(f"DELETE FROM {table} WHERE session_id = ?", (session_id,))
@@ -149,7 +149,7 @@ class Database:
     ## INSERTS
     def insert_session(self, session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, concussion_risk, fatigue_level):
         self.cursor.execute('''
-            INSERT INTO sessions (session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, concussion_risk, fatigue_level)
+            INSERT INTO training_sessions (session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, concussion_risk, fatigue_level)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, concussion_risk, fatigue_level))
         self.connection.commit()

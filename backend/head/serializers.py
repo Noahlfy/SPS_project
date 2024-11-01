@@ -6,4 +6,4 @@ class HeadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Head
         fields = '__all__'
-        read_only_fields = "time"
+        read_only_fields = ["time"]

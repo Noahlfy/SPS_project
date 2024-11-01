@@ -15,7 +15,7 @@ const startSession = () => {
                     <span class="text-2xl">Start a new session</span>
                     <button id="start-button" @click="startSession">
                         <RouterLink
-                        to="/session/active"
+                        to="/session"
                         > 
                         START
                         </RouterLink>

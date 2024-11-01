@@ -7,4 +7,4 @@ class LeftLegSerializer(serializers.ModelSerializer):
     class Meta:
         model = LeftLeg
         fields = "__all__"
-        read_only_fields = "time"
+        read_only_fields = ["time"]
