@@ -9,16 +9,11 @@ class Database:
     # CREATE
     def create_tables(self):
         self.cursor.execute('''
-        CREATE TABLE IF NOT EXISTS sessions (
+        CREATE TABLE IF NOT EXISTS session (
             session_id INTEGER PRIMARY KEY,  
             session_name VARCHAR(50),
             start_time DATETIME DEFAULT CURRENT_TIMESTAMP,
             end_time DATETIME,
-            acceleration_max REAL,
-            speed_max REAL,
-            total_distance REAL,
-            concussion_risk INTEGER,
-            fatigue_level REAL
         )
         ''')
 
@@ -147,36 +142,65 @@ class Database:
             return False
              
     ## INSERTS
-    def insert_session(self, session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, concussion_risk, fatigue_level):
+    def insert_session(self, session_id, session_name, start_time, end_time):
         self.cursor.execute('''
-            INSERT INTO training_sessions (session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, concussion_risk, fatigue_level)
+            INSERT INTO training_sessions (session_id, session_name, start_time, end_time)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (session_id, session_name, start_time, end_time, acceleration_max, speed_max, total_distance, concussion_risk, fatigue_level))
+        ''', (session_id, session_name, start_time, end_time))
         self.connection.commit()
         
-    def insert_BNO055(self, sensor_name, session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z): 
-        query = f'''INSERT INTO {sensor_name} (session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z)
+    def insert_BNO055(self, sensor_name, session_id_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z): 
+        query = f'''INSERT INTO {sensor_name} (session_id_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'''
-        self.cursor.execute(query, (session_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z))
+        self.cursor.execute(query, (session_id_id, time, accel_x, accel_y, accel_z, quat_w, quat_x, quat_y, quat_z))
         self.connection.commit()
 
         
-    def insert_MAX30102(self, session_id, time, SpO2, BPM) :
+    def insert_MAX30102(self, session_id_id, time, SpO2, BPM) :
         self.cursor.execute('''
-        INSERT INTO MAX30102 (session_id, time, SpO2, BPM)
+        INSERT INTO MAX30102 (session_id_id, time, SpO2, BPM)
         VALUES (?, ?, ?, ?)
-        ''', (session_id, time, SpO2, BPM))
+        ''', (session_id_id, time, SpO2, BPM))
         self.connection.commit()
     
-    def insert_BMP280(self, session_id, time, temperature, pressure) :
+    def insert_BMP280(self, session_id_id, time, temperature, pressure) :
         self.cursor.execute('''
-        INSERT INTO BMP280 (session_id, time, temperature, pressure)
+        INSERT INTO BMP280 (session_id_id, time, temperature, pressure)
         VALUES (?, ?, ?, ?)
-        ''', (session_id, time, temperature, pressure))
+        ''', (session_id_id, time, temperature, pressure))
         self.connection.commit()
     
-     
+    def insert_BNO055_transformed (self, sensor_name, session_id_id, timestamp, accel_x, accel_y, accel_z, vel_x, vel_y, vel_z, pos_x, pos_y, pos_z) :
+        self.cursor.execute(f'''
+        INSERT INTO {sensor_name}_transformed (session_id_id, timestamp, accel_x, accel_y, accel_z, vel_x, vel_y, vel_z, pos_x, pos_y, pos_z)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (session_id_id, timestamp, accel_x, accel_y, accel_z, vel_x, vel_y, vel_z, pos_x, pos_y, pos_z))
+    
+    def insert_session_stats(self, session_id_id, time, distance, pace, g, heart_rate, footing_quality, fatigue_level, training_intensity, concussion_risk):
+        self.cursor.execute('''
+        INSERT INTO session_stats (session_id_id, time, distance, pace, g, heart_rate, footing_quality, fatigue_level, training_intensity, concussion_risk)))
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (session_id_id, time, distance, pace, g, heart_rate, footing_quality, fatigue_level, training_intensity, concussion_risk))
+        self.connection.commit()
+    
+    def insert_concussion_stats(self, session_id_id, time, footing_quality, number_of_shocks, max_g, heart_rate, SpO2, temperature) :
+        self.cursor.execute('''
+        INSERT INTO concussion_stats (session_id_id, time, footing_quality, number_of_shocks, max_g, heart_rate, SpO2, temperature)
+        VALUES (?, ?, ?, ?, ?, ?)
+        ''', (session_id_id, time, footing_quality, number_of_shocks, max_g, heart_rate, SpO2, temperature))
+        self.connection.commit()
+        
+    def insert_dashboard_stats(self, session_id_id, time, training_productivity, concussion_risk, rest_days, concussion_passeport, training_intensity, heart_rate) :
+        self.cursor.execute('''
+        INSERT INTO dashboard_stats (session_id_id, time, training_productivity, concussion_risk, rest_days, concussion_passeport, training_intensity, heart_rate)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (session_id_id, time, training_productivity, concussion_risk, rest_days, concussion_passeport, training_intensity, heart_rate))
+        self.connection.commit()
+    
+    
     ## SHOW TABLES
+    
+   
     def fetch_all(self, sensor_name):
         self.cursor.execute(f'SELECT * FROM {sensor_name}')
         return self.cursor.fetchall()
@@ -186,8 +210,31 @@ class Database:
         query = f"SELECT * from {sensor_name}"
         df = pd.read_sql_query(query, self.connection)
         return df
+    
+    def to_dataframe_id(self, sensor_name, session_id):
+        query = f"SELECT * from {sensor_name} WHERE session_id_id = {session_id}"
+        df = pd.read_sql_query(query, self.connection)
+        return df
 
     def close(self):
         self.connection.close()
+        
+    def show_tables(self):
+        self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        tables = self.cursor.fetchall()
+        return [table[0] for table in tables]
 
+    def show_columns(self, table_name):
+        self.cursor.execute(f"PRAGMA table_info({table_name});")
+        columns = self.cursor.fetchall()
+        return [column[1] for column in columns]  # Extraction des noms de colonnes
 
+    
+db = Database("../../Database.db")
+tables = db.show_tables()  # Récupère la liste des tables
+
+print("Tables et leurs colonnes dans la base de données :")
+for table in tables:
+    columns = db.show_columns(table)  # Récupère les colonnes pour chaque table
+    print(f"Table: {table}, Colonnes: {columns}")
+    

@@ -257,23 +257,21 @@ nav {
     
 }
 
-.stats-container .buttons-diplay .session-name {
-    margin-top: 5% ;
-    height: 40%;
-    border: 3px white solid;
-}
-
-.buttons-display .buttons .play {
+.buttons-display .buttons #play {
 
     width: 40%;
     margin-right: 5%;
     background-color: green;
 }
-.buttons-display .buttons .stop {
+.buttons-display .buttons #stop {
 
     width: 40%;
 
     background-color: red;
+}
+
+.buttons-display .session-name input {
+    color: black;
 }
 
 .stats-container .player-stats {
@@ -341,14 +339,13 @@ nav {
 }
 
 .table-container {
-    position: fixed;
+    position: fixed; /* Fixe le conteneur */
     margin-top: 13%;
     margin-left: 12%;
     width: 85%;
-    max-height: 300px; 
     color: white;
-    overflow-y: auto;  
-    border: 1px solid #ccc; 
+    border: 1px solid #ccc;
+    overflow: hidden; /* Masque le débordement */
 }
 
 table {
@@ -356,8 +353,44 @@ table {
     border-collapse: collapse;
 }
 
+thead {
+    position: sticky; /* Rend l'en-tête collant */
+    top: 0; /* Colle à la partie supérieure de son conteneur */
+    background-color: #333; /* Fond de l'en-tête */
+    z-index: 10; /* Assure que l'en-tête est au-dessus du contenu */
+}
+
+tbody {
+    display: block; /* Affiche le corps du tableau en tant que bloc */
+    max-height: 420px; /* Limite la hauteur du corps du tableau */
+    overflow-y: auto; /* Active le défilement vertical */
+}
+
+tr {
+    display: table; /* Assure que chaque ligne de tr se comporte comme une ligne de tableau */
+    table-layout: fixed; /* Fixe la largeur des colonnes */
+    width: 100%; /* Utilise la largeur du tableau */
+}
+
 th, td {
     padding: 8px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
+
+
+
+.concussion-container {
+    position: fixed;
+    margin-top: 7%;
+    margin-left: 12%;
+
+    height: 82.5%;
+    width: 85%;
+
+    border-radius: 30px;
+
+    background-color: #2E2E2E;
+}
+
+

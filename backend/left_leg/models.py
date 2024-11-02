@@ -2,7 +2,7 @@ from django.db import models
 from session.models import Session
 
 class LeftLeg(models.Model):
-    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    session_id = models.ForeignKey(Session, on_delete=models.CASCADE)
     time = models.DateTimeField()
     accel_x = models.FloatField()
     accel_y = models.FloatField()

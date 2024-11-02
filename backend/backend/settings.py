@@ -37,14 +37,22 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'corsheaders',
     "rest_framework",
     "session",
     "chest",
+    "chest_transformed",
     "head",
+    "head_transformed",
     "left_leg",
+    "left_leg_transformed",
     "right_leg",
+    "right_leg_transformed",
     "heart_rate",
     "temperature",
+    'session_stats',
+    'concussion_stats',
+    'dashboard_stats',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +63,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
 ]
 
 ROOT_URLCONF = "backend.urls"

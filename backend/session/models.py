@@ -10,11 +10,6 @@ class Session(models.Model):
     session_name = models.CharField(max_length=50, default="Default Session")
     start_time = models.DateTimeField(auto_now_add=True)  # Automatically set on creation
     end_time = models.DateTimeField(auto_now_add=True)  # Allow null values
-    acceleration_max = models.FloatField(null=True, blank=True)
-    speed_max = models.FloatField(null=True, blank=True)
-    total_distance = models.FloatField(null=True, blank=True)
-    concussion_risk = models.FloatField(null=True, blank=True)
-    fatigue_level = models.FloatField(null=True, blank=True)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
 
     def __str__(self):

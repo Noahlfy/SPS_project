@@ -4,7 +4,7 @@ from session.models import Session
 # Create your models here.
 
 class Head(models.Model):
-    session = models.ForeignKey(Session, on_delete=models.CASCADE)  # ForeignKey to Session
+    session_id = models.ForeignKey(Session, on_delete=models.CASCADE)  # ForeignKey to Session
     time = models.DateTimeField()
     accel_x = models.FloatField()
     accel_y = models.FloatField()
