@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'corsheaders',
+    "channels",
     "rest_framework",
     "session",
     "chest",
@@ -66,6 +67,8 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
@@ -87,6 +90,17 @@ TEMPLATES = [
         },
     },
 ]
+
+# Channels configuration
+ASGI_APPLICATION = "backend.asgi.application"
+
+# Configurer Redis pour la gestion des WebSockets
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
+
 
 WSGI_APPLICATION = "backend.wsgi.application"
 

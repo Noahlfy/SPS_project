@@ -22,6 +22,23 @@ from session_stats.models import SessionStats
 
 from session.models import Session
 from django.utils.timezone import make_aware
+from channels.layers import get_channel_layer
+from asgiref.sync import sync_to_async, async_to_sync
+from django.utils import timezone
+
+def serialize_data(data):
+    """Convertit les objets datetime en chaînes de caractères dans les dictionnaires de données."""
+    for key, value in data.items():
+        if isinstance(value, datetime):
+            data[key] = value.isoformat()  # Convertit en format ISO
+        elif isinstance(value, dict):
+            serialize_data(value)  # Appel récursif pour les sous-dictionnaires
+        elif isinstance(value, list):
+            for item in value:
+                if isinstance(item, dict):
+                    serialize_data(item)  # Conversion dans les éléments de la liste
+    return data
+
 
 class DataHandler:
     def __init__(self, db):
@@ -30,7 +47,9 @@ class DataHandler:
         self.cursor = self.db.connection.cursor()
         self.active_session_id = None
         self.pause_session = False
-        self.lock = threading.Lock()  # Verrou pour accès concurrent à la base
+        self.lock = threading.Lock()  # Verrou pour accès concurrent à la base        
+        self.channel_layer = get_channel_layer()
+
 
 
     def get_last_session_id(self):
@@ -42,12 +61,43 @@ class DataHandler:
             if last_session_id is None :
                 return 0
             return last_session_id
-
         return 0
+    
+    async def get_all_data(self):
+        # Récupère toutes les données de chaque table
+        data = {
+            "head_data": await sync_to_async(list)(Head.objects.values()),
+            "head_transformed_data": await sync_to_async(list)(HeadTransformed.objects.values()),
+            "chest_data": await sync_to_async(list)(Chest.objects.values()),
+            "chest_transformed_data": await sync_to_async(list)(ChestTransformed.objects.values()),
+            "right_leg_data": await sync_to_async(list)(RightLeg.objects.values()),
+            "right_leg_transformed_data": await sync_to_async(list)(RightLegTransformed.objects.values()),
+            "left_leg_data": await sync_to_async(list)(LeftLeg.objects.values()),
+            "left_leg_transformed_data": await sync_to_async(list)(LeftLegTransformed.objects.values()),
+            "heart_rate_data": await sync_to_async(list)(HeartRate.objects.values()),
+            "temperature_data": await sync_to_async(list)(Temperature.objects.values()),
+            "concussion_stats_data": await sync_to_async(list)(ConcussionStats.objects.values()),
+            "session_stats_data": await sync_to_async(list)(SessionStats.objects.values()),
+        }
+        # Appelle la fonction de sérialisation pour convertir les datetime en chaînes de caractères
+        return serialize_data(data)
+
+    
+    async def send_data_via_websocket(self):
+        # Envoie toutes les données au WebSocket de manière asynchrone
+        data = await self.get_all_data()  # Appel asynchrone de get_all_data
+        await self.channel_layer.group_send(
+            "data_group",
+            {
+                "type": "send_data",
+                "data": data,
+            }
+        )
+
         
     def process_data(self, data):
         if self.active_session_id is not None :          
-            time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            time_now = timezone.now()
             
             with self.lock:  # Utilisation du verrou lors de l'accès à la base
                 print(f"Inserting measures for session {self.get_last_session_id()}")
@@ -200,6 +250,9 @@ class DataHandler:
                     SpO2=stats.SpO2(),
                     temperature=stats.temperature()
                 )
+                
+                async_to_sync(self.send_data_via_websocket)()  # Exécuter send_data_via_websocket dans un contexte synchrone
+                print("Data inserted")
         else :
             print("No active session")
        

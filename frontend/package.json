@@ -10,6 +10,10 @@
   },
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^3.0.8",
+    "chart.js": "^4.4.6",
+    "chartjs-adapter-date-fns": "^3.0.0",
+    "date-fns": "^4.1.0",
+    "pinia": "^2.2.6",
     "primeicons": "^7.0.0",
     "three": "^0.169.0",
     "vue": "^3.5.12",

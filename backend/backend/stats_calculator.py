@@ -89,7 +89,8 @@ class BNO05Sensor:
         try:
             self.data = self.db.to_dataframe_id(self.name, self.session_id)
             if self.data.empty:
-                print(f"Aucune nouvelle donnée reçue pour {self.name}. Étape de calcul ignorée.")
+                # print(f"Aucune donnée reçue pour {self.name}. Étape de calcul ignorée.")
+                a = 0
             else:
                 # Convertir la colonne 'time' en datetime
                 self.data['time'] = pd.to_datetime(self.data['time'])
@@ -178,7 +179,12 @@ class BNO05Sensor:
             pace = self.velocities_norm[-1]
         else:
             pace = np.mean(self.velocities_norm[-window_size:])
-        return pace
+        if pace > 0:
+            pace_min_per_km = (1000 / pace) / 60  # En min/km
+        else:
+            pace_min_per_km = 20  # Vitesse nulle, donc allure infinie
+
+        return 0
 
     def compute_distance(self):
         if len(self.df) > 1:
@@ -254,7 +260,7 @@ class RealTimeStatistics:
         try:
             while self.active_session_id is not None:
                 elapsed_time = (pd.Timestamp.now() - start_time).total_seconds()
-                print(f'Temps écoulé : {elapsed_time:.2f} secondes', end='\r')
+                # print(f'Temps écoulé : {elapsed_time:.2f} secondes', end='\r')
                 time.sleep(0.1)
         except KeyboardInterrupt:
             print('\nTimer stopped.')
@@ -334,51 +340,41 @@ class RealTimeStatistics:
             relative_pos = pos2 - pos1
             return relative_pos
         else:
-            print("Impossible de calculer la position relative.")
+            # print("Impossible de calculer la position relative.")
             return None
 
     def temperature(self):
         if not self.BMP280.empty:
             return self.BMP280.iloc[-1]["temperature"]
         else:
-            print("No BMP280 data available.")
+            # print("No BMP280 data available.")
             return None
 
     def pressure(self):
         if not self.BMP280.empty:
             return self.BMP280.iloc[-1]["pressure"]
         else:
-            print("No BMP280 data available.")
+            # print("No BMP280 data available.")
             return None
 
     def BPM(self):
         if not self.MAX30102.empty:
             return self.MAX30102.iloc[-1]["BPM"]
         else:
-            print("No MAX30102 data available.")
+            # print("No MAX30102 data available.")
             return None
 
     def SpO2(self):
         if not self.MAX30102.empty:
             return self.MAX30102.iloc[-1]["SpO2"]
         else:
-            print("No MAX30102 data available.")
+            # print("No MAX30102 data available.")
             return None
-
-class Statistics:
-    def __init__(self, db):
-        self.db = db
-        self.sessions = db.get_sessions_dataframe()
-        print("Statistics initialized.")
-
-class RealTimePlotter:
-    def __init__(self):
-        print("RealTimePlotter initialized.")
 
 class ShockAlert:
     def __init__(self, threshold_g=20):
         self.threshold_g = threshold_g
-        print(f"ShockAlert initialized with threshold: {self.threshold_g}G")
+        # print(f"ShockAlert initialized with threshold: {self.threshold_g}G")
 
     def check_shock(self, dataframe):
         """
@@ -390,7 +386,7 @@ class ShockAlert:
         for index, row in dataframe.iterrows():
             acc_x, acc_y, acc_z = row['accel_x'], row['accel_y'], row['accel_z']
             total_acc = np.sqrt(acc_x**2 + acc_y**2 + acc_z**2)
-            print(f"Total acceleration at index {index}: {total_acc:.2f}G")
+            # print(f"Total acceleration at index {index}: {total_acc:.2f}G")
 
             if total_acc > self.threshold_g:
                 messages.append(f"Shock detected: {total_acc:.2f}G at index {index}.\nSensor data: {row.to_dict()}")
@@ -458,10 +454,10 @@ class FatigueCalculator:
             total_fatigue = min(total_fatigue, 100)
             fatigue_list.append(total_fatigue)
 
-            print(f"BPM: {bpm}, Base Fatigue: {base_fatigue:.2f}%, Inclination Angle: {inclination_angle[index]:.2f}°, Extra Fatigue: {extra_fatigue:.2f}%, Total Fatigue: {total_fatigue:.2f}%")
+            # print(f"BPM: {bpm}, Base Fatigue: {base_fatigue:.2f}%, Inclination Angle: {inclination_angle[index]:.2f}°, Extra Fatigue: {extra_fatigue:.2f}%, Total Fatigue: {total_fatigue:.2f}%")
 
         average_fatigue = np.mean(fatigue_list)
-        print(f"Fatigue moyenne ajustée : {average_fatigue:.2f}%")
+        # print(f"Fatigue moyenne ajustée : {average_fatigue:.2f}%")
         return average_fatigue
 
 class PostTrainingAnalysis:
@@ -475,7 +471,7 @@ class PostTrainingAnalysis:
         self.running_threshold = 15  # Seuil d'accélération pour considérer que le joueur court
         self.running_time = 0  # Temps pendant lequel le joueur court
         self.standing_time = 0  # Temps pendant lequel le joueur est presque sur place
-        print("PostTrainingAnalysis initialized.")
+        # print("PostTrainingAnalysis initialized.")
 
     def get_chest_data(self, session_id):
         """
@@ -485,10 +481,10 @@ class PostTrainingAnalysis:
         """
         df = self.db.to_dataframe_id('BNO055_chest', session_id)
         if not df.empty:
-            print(f"Retrieved chest data for session {session_id}: {len(df)} entries.")
+            # print(f"Retrieved chest data for session {session_id}: {len(df)} entries.")
             return df[['accel_x', 'accel_y', 'accel_z']]
         else:
-            print(f"No chest data found for session {session_id}.")
+            # print(f"No chest data found for session {session_id}.")
             return pd.DataFrame(columns=['accel_x', 'accel_y', 'accel_z'])
 
     def analyze(self, session_id):
@@ -499,7 +495,7 @@ class PostTrainingAnalysis:
         """
         session_data = self.get_chest_data(session_id)
         total_time = len(session_data) * 0.5  # Supposons que chaque mesure est prise toutes les 0,5 secondes
-        print(f"Total analysis time for session {session_id}: {total_time:.2f} seconds.")
+        # print(f"Total analysis time for session {session_id}: {total_time:.2f} seconds.")
 
         for index, row in session_data.iterrows():
             acc_x, acc_y, acc_z = row['accel_x'], row['accel_y'], row['accel_z']
@@ -508,10 +504,10 @@ class PostTrainingAnalysis:
             # Analyse des chocs
             if total_acc > self.shock_threshold:
                 self.shock_count += 1
-                print(f"Shock detected! Total acceleration: {total_acc:.2f}G")
+                # print(f"Shock detected! Total acceleration: {total_acc:.2f}G")
                 if total_acc > 50:  # Seuil de choc violent
                     self.rest_days += 3
-                    print("Severe shock detected. Adding 3 days of rest.")
+                    # print("Severe shock detected. Adding 3 days of rest.")
 
             # Déterminer le temps de course ou de stationnement
             if total_acc > self.running_threshold:
@@ -521,11 +517,11 @@ class PostTrainingAnalysis:
 
         # Calculer l'intensité de l'entraînement
         intensity = (self.running_time / total_time) * 100 if total_time > 0 else 0
-        print(f"Training intensity: {intensity:.2f}%")
+        # print(f"Training intensity: {intensity:.2f}%")
 
         # Détermination du risque de concussion
         concussion_risk = min(self.shock_count, 5)  # Échelle de risque de 0 à 5
-        print(f"Concussion risk level: {concussion_risk}")
+        # print(f"Concussion risk level: {concussion_risk}")
 
         return {
             'concussion_risk': concussion_risk,
@@ -548,7 +544,7 @@ class FootingQuality:
         right_leg_data = self.right_leg_sensor.integration()
 
         if left_leg_data.empty or right_leg_data.empty:
-            print("Données insuffisantes pour calculer l'écartement.")
+            # print("Données insuffisantes pour calculer l'écartement.")
             return 0.0
 
         left_position = left_leg_data[['pos_x', 'pos_y', 'pos_z']].iloc[-1].values
@@ -558,7 +554,7 @@ class FootingQuality:
         # Normalisation
         typical_stance_width = 3000  # Valeur typique ajustée
         normalized_stance = max(0.0, min(width / typical_stance_width, 1.0))
-        print(f"Écartement calculé: {width:.2f}, Normalisé: {normalized_stance:.2f}")
+        # print(f"Écartement calculé: {width:.2f}, Normalisé: {normalized_stance:.2f}")
 
         return normalized_stance
 
@@ -588,7 +584,7 @@ class FootingQuality:
         # Moyenne des scores de stabilité des deux jambes
         stability_score = (left_stability + right_stability) / 2
 
-        print(f"Stabilité calculée: Left: {left_stability:.2f}, Right: {right_stability:.2f}, Score: {stability_score:.2f}")
+        # print(f"Stabilité calculée: Left: {left_stability:.2f}, Right: {right_stability:.2f}, Score: {stability_score:.2f}")
         return stability_score
 
 
@@ -597,7 +593,7 @@ class FootingQuality:
         head_data = self.head_sensor.integration()
 
         if chest_data.empty or head_data.empty:
-            print("Données insuffisantes pour calculer l'alignement.")
+            # print("Données insuffisantes pour calculer l'alignement.")
             return 0.0
 
         chest_position = chest_data[['pos_x', 'pos_y', 'pos_z']].iloc[-1].values
@@ -608,7 +604,7 @@ class FootingQuality:
         typical_alignment_tolerance = 1000
         alignment_score = max(0.0, 1 - (np.abs(alignment_vector[1]) / typical_alignment_tolerance))
 
-        print(f"Alignement calculé (écart en y): {alignment_vector[1]:.2f}, Normalisé: {alignment_score:.2f}")
+        # print(f"Alignement calculé (écart en y): {alignment_vector[1]:.2f}, Normalisé: {alignment_score:.2f}")
         return alignment_score
 
     def footing_quality_score(self):
@@ -624,5 +620,5 @@ class FootingQuality:
                          stability * stability_weight +
                          alignment * alignment_weight)
 
-        print(f"Score de qualité des appuis calculé: {quality_score:.2f}")
+        # print(f"Score de qualité des appuis calculé: {quality_score:.2f}")
         return quality_score

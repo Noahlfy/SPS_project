@@ -219,9 +219,13 @@ class Database:
     def close(self):
         self.connection.close()
         
-    def show_tables(self):
-        self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    def drop_tables(self):
+        self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name != 'sqlite_sequence';")
         tables = self.cursor.fetchall()
+        for table_name in tables:
+            self.cursor.execute(f"DROP TABLE IF EXISTS {table_name[0]};")
+            print(f"Table {table_name[0]} supprimée.")
+
         return [table[0] for table in tables]
 
     def show_columns(self, table_name):
@@ -229,12 +233,4 @@ class Database:
         columns = self.cursor.fetchall()
         return [column[1] for column in columns]  # Extraction des noms de colonnes
 
-    
-db = Database("../../Database.db")
-tables = db.show_tables()  # Récupère la liste des tables
-
-print("Tables et leurs colonnes dans la base de données :")
-for table in tables:
-    columns = db.show_columns(table)  # Récupère les colonnes pour chaque table
-    print(f"Table: {table}, Colonnes: {columns}")
     

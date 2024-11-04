@@ -3,6 +3,7 @@ import threading
 from .models import Session
 
 from .services import start_mqtt_clients, stop_mqtt_clients, close_mqtt_clients
+from backend.consumers import DataConsumer
 
 class SessionSerializer(serializers.ModelSerializer):
 
