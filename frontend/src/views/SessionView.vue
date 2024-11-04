@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar.vue';
 import SearchBar from '@/components/SearchBar.vue';
 import SessionGraphs from '@/components/SessionGraphs.vue';
 import SessionStats from '../components/SessionStats.vue';
+import PlayerStats from '@/components/PlayerStats.vue';
 
 import { ref, computed } from 'vue';
 import { useDataStore } from '@/stores/dataStore';
@@ -34,4 +35,5 @@ const onSessionChange = () => {
     </div>
     <SessionGraphs />
     <SessionStats />
+    <PlayerStats />
 </template>

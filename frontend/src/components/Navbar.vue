@@ -31,12 +31,8 @@ const isActiveLink = (routePath) => {
         </div>
         <div class="nav-icon">
             <RouterLink to="/session" 
-            :class="[isActiveLink('/session')
-            ? 'text-primary'
-            : 'text-white',
-            'hover:text-secondary'
-            ]">
-                <i class="fas fa-running text-5xl"></i>
+                :class="[isActiveLink('/session') ? 'text-primary' : 'text-white', 'hover:text-secondary']">
+                <font-awesome-icon :icon="['fas', 'stopwatch']" class="text-5xl" />
             </RouterLink>
         </div>
         <div class="nav-icon">

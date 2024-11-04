@@ -51,6 +51,7 @@ const rows = computed(() => {
 
   return dataStore[sensor];
 });
+
 </script>
 
 <template>
@@ -80,7 +81,9 @@ const rows = computed(() => {
         </thead>
         <tbody>
           <tr v-for="row in rows" :key="row.id">
-            <td v-for="column in columns" :key="column">{{ row[column] }}</td>
+            <td v-for="column in columns" :key="column">
+              {{ typeof row[column] === 'number' ? row[column].toFixed(2) : row[column] }}
+            </td>
           </tr>
         </tbody>
       </table>

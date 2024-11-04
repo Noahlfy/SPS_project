@@ -5,7 +5,20 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 
 from backend.database import Database  # Pour convertir les quaternions en matrices de rotation
+from django.utils import timezone
 
+from head_memory.models import HeadMemory
+from chest_memory.models import ChestMemory
+from left_leg_memory.models import LeftLegMemory
+from right_leg_memory.models import RightLegMemory
+
+
+MEMORY_MODELS = {
+    'BNO055_head': HeadMemory,
+    'BNO055_chest': ChestMemory,
+    'BNO055_left_leg': LeftLegMemory,
+    'BNO055_right_leg': RightLegMemory,
+}
 
 def quaternion_to_euler(w, x, y, z):
     """
@@ -44,20 +57,36 @@ class BNO05Sensor:
         self.db = db_connection  # db_connection est une instance de Database
         self.name = name
         self.session_id = session_id
+        
+        MEMORY_NAME = {
+            'BNO055_head': 'BNO055_head_memory',
+            'BNO055_chest': 'BNO055_chest_memory',
+            'BNO055_left_leg': 'BNO055_left_leg_memory',
+            'BNO055_right_leg': 'BNO055_right_leg_memory',
+        }
 
-        self.g_measurements = [0]
-        self.velocities_norm = [0]
-        self.distance = 0
+        memory_data = self.db.to_dataframe_id(MEMORY_NAME.get(self.name), self.session_id)
+        
+        try:
+            self.g_measurements = memory_data['g_measurement'].tolist() if not memory_data['g_measurement'].empty else [0]
+            self.velocities_norm = memory_data['velocity_norm'].tolist() if not memory_data['velocity_norm'].empty else [0]
+            self.distance = memory_data['distance'].iloc[-1] if not memory_data['distance'].empty else 0
+        except KeyError as e:
+            print(f"Column missing in memory data: {e}")
+            self.g_measurements = [0]
+            self.velocities_norm = [0]
+            self.distance = 0
 
         self.data = pd.DataFrame()  # Initialisation de self.data
-
         self.update_data()  # Récupérer les dernières données
 
-        if self.data.empty:
-            # Aucune donnée disponible, initialiser df avec la position initiale
+        # Initialisation de self.df
+        transformed_data = self.db.to_dataframe_id(self.name + '_transformed', self.session_id)
+        
+        if transformed_data.empty:
             self.df = pd.DataFrame({
                 'session_id': [self.session_id],
-                'timestamp': [pd.Timestamp.now()],
+                'timestamp': [timezone.now()],
                 'accel_x': [0],
                 'accel_y': [0],
                 'accel_z': [0],
@@ -69,21 +98,8 @@ class BNO05Sensor:
                 'pos_z': [initial_position[2]]
             })
         else:
-            # Utiliser le timestamp des dernières données
-            self.df = pd.DataFrame({
-                'session_id': [self.session_id],
-                'timestamp': [pd.to_datetime(self.data.iloc[-1]['time'])],
-                'accel_x': [0],
-                'accel_y': [0],
-                'accel_z': [0],
-                'vel_x': [0],
-                'vel_y': [0],
-                'vel_z': [0],
-                'pos_x': [initial_position[0]],
-                'pos_y': [initial_position[1]],
-                'pos_z': [initial_position[2]]
-            })
-
+            self.df = transformed_data
+            
     def update_data(self):
         # Récupérer dynamiquement les dernières données pour la session active depuis la base de données
         try:
@@ -165,32 +181,41 @@ class BNO05Sensor:
                 'pos_y': [position[1]],
                 'pos_z': [position[2]]
             })
-
+            
             self.df = pd.concat([self.df, new_data], ignore_index=True)
+            
+            memory_model = MEMORY_MODELS.get(self.name)
+            if memory_model:
+                memory_model.objects.create(
+                    session_id_id=self.session_id,
+                    time=timezone.now(),
+                    g_measurement=self.g_measurements[-1],
+                    distance=self.distance,
+                    velocity_norm=self.velocities_norm[-1]
+                )
+        
             return self.df
         else:
             return self.df
 
     def compute_g(self):
         return self.g_measurements[-1]
+    
+    
 
     def pace(self, window_size=10):
         if len(self.velocities_norm) < window_size:
-            pace = self.velocities_norm[-1]
+            pace = 0
         else:
             pace = np.mean(self.velocities_norm[-window_size:])
-        if pace > 0:
-            pace_min_per_km = (1000 / pace) / 60  # En min/km
-        else:
-            pace_min_per_km = 20  # Vitesse nulle, donc allure infinie
-
-        return 0
+        pace_km_per_hour = pace * 3.6
+        return pace_km_per_hour
 
     def compute_distance(self):
         if len(self.df) > 1:
             pos_prev = self.df.iloc[-2][['pos_x', 'pos_y', 'pos_z']].to_numpy()
             pos_curr = self.df.iloc[-1][['pos_x', 'pos_y', 'pos_z']].to_numpy()
-            delta_position = np.linalg.norm(pos_curr - pos_prev)
+            delta_position = abs(np.linalg.norm(pos_curr - pos_prev))
             self.distance += delta_position
         return self.distance
 
@@ -308,6 +333,7 @@ class RealTimeStatistics:
         if sensor_name == 'BNO055_head':
             return self.head_sensor.compute_distance()
         elif sensor_name == 'BNO055_chest':
+            print("distance chest :" , self.chest_sensor.compute_distance())
             return self.chest_sensor.compute_distance()
         elif sensor_name == 'BNO055_right_leg':
             return self.right_leg_sensor.compute_distance()
@@ -318,15 +344,12 @@ class RealTimeStatistics:
             return None
     
     def max_g(self): 
-        max_g = 0
-        if not self.head_sensor.g_measurements:
-            max_g = max(self.head_sensor.g_measurements)
+        head_max_g = max(self.head_sensor.g_measurements, default=0)
+        chest_max_g = max(self.chest_sensor.g_measurements, default=0)
 
-        elif not self.chest_sensor.g_measurements:
-            max_g = max(self.chest_sensor.g_measurements)
-        else : 
-            max_g = 0
-            print("No BNO data available.")
+        max_g = max(head_max_g, chest_max_g)
+
+        print(f"Max G measured: {max_g}")
         return max_g
 
     def relative_position(self, BNO_1, BNO_2):

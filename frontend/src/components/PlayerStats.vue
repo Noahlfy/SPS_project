@@ -9,7 +9,7 @@ const playerContainer = ref(null);
 onMounted(() => {
     // Initialiser la scène, la caméra et le renderer
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth * 0.32 / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth * 0.27 / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
     // Définir la taille et ajouter le renderer dans le conteneur Vue
@@ -42,7 +42,7 @@ onMounted(() => {
 
     loader.load(modelPath, (gltf) => {
         const model = gltf.scene;
-        model.position.set(0, -1, 0); // Ajuster la position pour mieux centrer le modèle
+        model.position.set(0, -1.25, 0); // Ajuster la position pour mieux centrer le modèle
         model.scale.set(1.75, 1.75, 1.75); // Ajuster la taille du modèle si nécessaire
         scene.add(model);
     }, undefined, (error) => {
@@ -78,6 +78,6 @@ onMounted(() => {
 
 <template>
     <section>
-        <div ref="playerContainer" class="player-container"></div>
+        <div ref="playerContainer" class="session-player-container"></div>
     </section>
 </template>

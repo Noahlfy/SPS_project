@@ -90,6 +90,7 @@ export const initializeData = () => {
   
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        console.log("Données reçues via WebSocket :", data);
         handleWebSocketData(data);
       };
   

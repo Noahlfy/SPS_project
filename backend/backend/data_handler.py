@@ -24,7 +24,7 @@ from session.models import Session
 from django.utils.timezone import make_aware
 from channels.layers import get_channel_layer
 from asgiref.sync import sync_to_async, async_to_sync
-from django.utils import timezone
+from django.utils.timezone import make_aware, is_naive
 
 def serialize_data(data):
     """Convertit les objets datetime en chaînes de caractères dans les dictionnaires de données."""
@@ -129,7 +129,13 @@ class DataHandler:
                         quat_y=data['BNO055_head']['quat_y'],
                         quat_z=data['BNO055_head']["quat_z"]
                     )
-                    head_df = HeadSensor(self.db, self.active_session_id).integration()
+                    
+                    head_df = HeadSensor(self.db, self.active_session_id).integration() 
+                                       
+                    timestamp = head_df.iloc[-1]['timestamp']
+                    # if is_naive(timestamp):
+                    #     timestamp = make_aware(timestamp)
+                        
                     HeadTransformed.objects.create(
                         session_id=session,
                         timestamp=make_aware(head_df.iloc[-1]['timestamp']),
@@ -156,9 +162,14 @@ class DataHandler:
                         quat_z=data['BNO055_chest']["quat_z"]
                     )
                     chest_df = ChestSensor(self.db, self.active_session_id).integration()
+                    
+                    timestamp = chest_df.iloc[-1]['timestamp']
+                    # if is_naive(timestamp):
+                    #     timestamp = make_aware(timestamp)
+                        
                     ChestTransformed.objects.create(
                         session_id=session,
-                        timestamp=make_aware(chest_df.iloc[-1]['timestamp']),
+                        timestamp=timestamp,
                         accel_x=chest_df.iloc[-1]['accel_x'],
                         accel_y=chest_df.iloc[-1]['accel_y'],
                         accel_z=chest_df.iloc[-1]['accel_z'],
@@ -182,9 +193,14 @@ class DataHandler:
                         quat_z=data['BNO055_right_leg']["quat_z"]
                     )          
                     right_leg_df = RightLegSensor(self.db, self.active_session_id).integration()
+                    
+                    timestamp = right_leg_df.iloc[-1]['timestamp']
+                    # if is_naive(timestamp):
+                    #     timestamp = make_aware(timestamp)
+                        
                     RightLegTransformed.objects.create(
                         session_id=session,
-                        timestamp=make_aware(right_leg_df.iloc[-1]['timestamp']),
+                        timestamp=timestamp,
                         accel_x=right_leg_df.iloc[-1]['accel_x'],
                         accel_y=right_leg_df.iloc[-1]['accel_y'],
                         accel_z=right_leg_df.iloc[-1]['accel_z'],  
@@ -208,9 +224,14 @@ class DataHandler:
                         quat_z=data['BNO055_left_leg']["quat_z"]
                     )
                     left_leg_df = LeftLegSensor(self.db, self.active_session_id).integration()
+                    
+                    timestamp = left_leg_df.iloc[-1]['timestamp']
+                    # if is_naive(timestamp):
+                    #     timestamp = make_aware(timestamp)
+                        
                     LeftLegTransformed.objects.create(
                         session_id=session,
-                        timestamp=make_aware(left_leg_df.iloc[-1]['timestamp']),
+                        timestamp=timestamp,
                         accel_x=left_leg_df.iloc[-1]['accel_x'],
                         accel_y=left_leg_df.iloc[-1]['accel_y'],
                         accel_z=left_leg_df.iloc[-1]['accel_z'],
@@ -223,16 +244,18 @@ class DataHandler:
                     )
 
                 stats = RealTimeStatistics(self.db, self.active_session_id)
+                chest_distance = stats.get_BNO_distance('BNO055_chest')
                 foot_quality = FootingQuality(self.db, self.active_session_id)
                 fatigue = FatigueCalculator(self.db, session_id=self.active_session_id)
                 training = PostTrainingAnalysis(self.db)
 
+                print('BPM', stats.BPM())
                 SessionStats.objects.create(
                     session_id=session,
                     time=time_now,
-                    distance=stats.get_BNO_distance('BNO055_chest'),
+                    distance=chest_distance,
                     pace=stats.get_BNO_pace('BNO055_chest'),
-                    g=stats.get_BNO_g('BNO055_chest'),
+                    g=stats.get_BNO_g('BNO055_head'),
                     BPM=stats.BPM(),
                     footing_quality=foot_quality.footing_quality_score(),
                     fatigue_level=fatigue.calculate_fatigue(),

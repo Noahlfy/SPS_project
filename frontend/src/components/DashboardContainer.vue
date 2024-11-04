@@ -25,16 +25,16 @@ const startSession = () => {
                 <div class="last-session">
                     
                     <ul>
-                        <li>Productivity of last session</li>
-                        <li>Concussion risk</li>
-                        <li>Days Of Rest Needed</li>
+                        <li>Productivity of last session :       INTENSE</li>
+                        <li>Concussion risk : 30% </li>
+                        <li>Days Of Rest Needed : 3 Days</li>
                     </ul>
                 </div>
             </div>
             <div class="global-statistics">
                 <div class="box" id="Concussion-passeport">
                     <div class="data-name">Concussion passeport</div>
-                    <div class="data-value">7/10</div>
+                    <div class="data-value">5/10</div>
                 </div>
                 <div class="box" id="average-activity-during-sessions">
                     <div class="data-name">Average activity during sessions</div>
@@ -42,7 +42,7 @@ const startSession = () => {
                 </div>
                 <div class="box" id="average-heart-rate">
                     <div class="data-name">Average heart rate</div>
-                    <div class="data-value">60BPM</div>
+                    <div class="data-value">67BPM</div>
                 </div>
             </div>
         </div>

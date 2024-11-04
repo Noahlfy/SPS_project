@@ -233,4 +233,4 @@ class Database:
         columns = self.cursor.fetchall()
         return [column[1] for column in columns]  # Extraction des noms de colonnes
 
-    
+Database('../../Database.db').drop_tables()

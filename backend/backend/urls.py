@@ -16,6 +16,10 @@ from heart_rate.views import HeartRateViewSet
 from session_stats.views import SessionStatsViewSet
 from concussion_stats.views import ConcussionStatsViewSet
 from dashboard_stats.views import DashboardStatsViewSet
+from chest_memory.views import ChestMemoryViewSet
+from head_memory.views import HeadMemoryViewSet
+from left_leg_memory.views import LeftLegMemoryViewSet
+from right_leg_memory.views import RightLegMemoryViewSet
 
 router = routers.DefaultRouter()
 router.register("session", SessionViewSet)
@@ -32,6 +36,10 @@ router.register("heart-rate", HeartRateViewSet)
 router.register("session-stats", SessionStatsViewSet)
 router.register("concussion-stats", ConcussionStatsViewSet)
 router.register("dashboard-stats", DashboardStatsViewSet)
+router.register("chest-memory", ChestMemoryViewSet)
+router.register("head-memory", HeadMemoryViewSet)
+router.register("right-leg-memory", RightLegMemoryViewSet)
+router.register("left-leg-memory", LeftLegMemoryViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

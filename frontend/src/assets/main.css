@@ -10,6 +10,10 @@
     color: white;
 }
 
+form {
+    /* color: black; */
+}
+
 .search-bar{
     position: fixed;
     background-color: #2E2E2E;
@@ -60,9 +64,9 @@ nav {
 .dashboard-container {
     position: fixed;
 
-    width: 50%;
+    width: 55%;
     height: 83%;
-    margin-left: 13%;
+    margin-left: 12%;
     margin-top: 7% ;
 
     background-color: #2E2E2E;
@@ -324,7 +328,7 @@ nav {
     width: 25%;
     height: 8%;
 
-
+    color: black;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -400,9 +404,92 @@ th, td {
 .select-session {
     position: absolute;
 
-    margin-left: 87%;
+    margin-left: 80%;
     margin-top: 1%;
     width: 20%;
 
     color: black;
+}
+
+.concussion-container .graphics-container {
+
+    margin-top: 1%;
+    margin-left: 1%;
+    height: 79%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    
+}
+.graphics-container .graph {
+    flex: 1;
+    min-width: 200px; 
+    height: 22%; 
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.concussion-container .stats-container {
+
+    position: fixed;
+    margin-top: 1%;
+    margin-left: 43%;
+    height: 79%;
+    width: 40%;
+    background-color: #4a4a4a;
+}
+
+.concussion-container .stats-container .stats {
+    
+    width: 100%;
+    height: 100%;
+    margin: 0%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.stats-item {
+
+    width: 28%;
+    height: 45%;
+    margin: 2%;
+    padding:    10px 10px;
+    border: 1px white dotted ;
+    border-radius: 20px;
+}
+
+.stats-item .stats {
+
+    width: 100%;
+    height: 20%;
+    margin-bottom: 4%;
+    padding:    0px 7px;
+    border-top: 1px white dotted ;
+}
+
+.stats-item .stats-data {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 200%;
+
+}
+
+.session-player-container {
+    position: fixed;
+    background-color: #2E2E2E;
+    margin-top: 7%;
+    right: 43px;
+    border-radius: 30px;
+    height: 83%;
+    width: 20.5%;
+    z-index: 1000;
+    overflow: hidden;
 }

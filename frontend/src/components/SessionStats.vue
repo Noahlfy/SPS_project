@@ -13,14 +13,12 @@ const sessionName = ref('Session');
 const disablePlayButton = ref(false);
 const disableStopButton = ref(true);
 
-
 const currentSession = computed(() => {
   const sessions = dataStore.session || [];
   
   // Prioriser la session active
   let activeSession = sessions.find(session => session.status !== 'completed');
   if (activeSession) {
-    // Vous pouvez effacer 'selectedSessionId' si vous souhaitez que la session active prenne toujours le dessus
     dataStore.selectedSessionId = activeSession.session_id;
     return activeSession;
   }
@@ -38,11 +36,7 @@ const currentSession = computed(() => {
   }
 });
 
-
-
 const status = computed(() => {
-    console.log('Calcul de status...');
-
   return currentSession.value ? currentSession.value.status : 'completed';
 });
 
@@ -56,7 +50,7 @@ const putStatusSession = async (statusToUpdate) => {
 
     // Requête PUT pour mettre à jour le statut
     const response = await fetch(`http://localhost:8000/api/session/${sessionId}/`, {
-      method: 'PUT', // ou 'PATCH' si votre API le permet
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -94,13 +88,10 @@ const putStatusSession = async (statusToUpdate) => {
     // Mettre à jour dataStore.session avec les nouvelles données
     dataStore.updateData('session', sessionsData);
 
-    // Le 'watch' sur 'status' se déclenchera automatiquement
-
   } catch (error) {
     console.error('Error in putStatusSession:', error);
   }
 };
-
 
 const updateButtonStates = () => {
   if (status.value === 'active') {
@@ -146,7 +137,6 @@ const stopSession = () => {
   }
 };
 
-
 watch(
   status,
   (newVal, oldVal) => {
@@ -155,7 +145,6 @@ watch(
   },
   { immediate: true }
 );
-
 
 const displayedSessionName = computed(() => {
   if (askSessionName.value) {
@@ -166,7 +155,6 @@ const displayedSessionName = computed(() => {
     return 'Session';
   }
 });
-
 
 const beginSession = async () => {
   try {
@@ -214,9 +202,6 @@ const beginSession = async () => {
     // Mettre à jour dataStore.session avec les nouvelles données
     dataStore.updateData('session', sessionsData);
 
-    // Le 'watch' sur 'status' se déclenchera automatiquement
-    // Les boutons seront mis à jour via le watch sur 'status'
-
   } catch (error) {
     console.error('Erreur dans beginSession:', error);
   }
@@ -224,18 +209,15 @@ const beginSession = async () => {
 
 const latestSessionStats = computed(() => {
   const stats = dataStore['session-stats'] || [];
+
   if (!currentSession.value) {
     return null;
   }
+
   const currentSessionId = currentSession.value.session_id;
-  // Vérifiez si stat.session_id est un nombre ou un objet
-  const currentSessionStats = stats.filter(stat => {
-    if (typeof stat.session_id === 'object' && stat.session_id !== null) {
-      return stat.session_id.session_id === currentSessionId;
-    } else {
-      return stat.session_id === currentSessionId;
-    }
-  });
+
+  const currentSessionStats = stats.filter(stat => stat.session_id === currentSessionId);
+
   if (currentSessionStats.length === 0) {
     return null;
   }
@@ -245,7 +227,7 @@ const latestSessionStats = computed(() => {
 
 const distanceDisplay = computed(() => {
   if (latestSessionStats.value && latestSessionStats.value.distance !== null) {
-    return `${latestSessionStats.value.distance.toFixed(2)} km`;
+    return `${latestSessionStats.value.distance.toFixed(2)} m`;
   } else {
     return 'N/A';
   }
@@ -253,7 +235,7 @@ const distanceDisplay = computed(() => {
 
 const fatigueLevelDisplay = computed(() => {
   if (latestSessionStats.value && latestSessionStats.value.fatigue_level !== null) {
-    return `${(latestSessionStats.value.fatigue_level * 100).toFixed(0)}%`;
+    return `${(latestSessionStats.value.fatigue_level).toFixed(0)}%`;
   } else {
     return 'N/A';
   }
@@ -269,7 +251,7 @@ const positionQualityDisplay = computed(() => {
 
 const trainingIntensityDisplay = computed(() => {
   if (latestSessionStats.value && latestSessionStats.value.training_intensity !== null) {
-    return `${(latestSessionStats.value.training_intensity * 100).toFixed(0)}%`;
+    return `${(latestSessionStats.value.training_intensity).toFixed(0)}%`;
   } else {
     return 'N/A';
   }

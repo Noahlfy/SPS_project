@@ -54,6 +54,10 @@ INSTALLED_APPS = [
     'session_stats',
     'concussion_stats',
     'dashboard_stats',
+    'chest_memory',
+    'head_memory',
+    'left_leg_memory',
+    'right_leg_memory',
 ]
 
 MIDDLEWARE = [
