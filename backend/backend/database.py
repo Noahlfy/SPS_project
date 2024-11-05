@@ -227,10 +227,15 @@ class Database:
             print(f"Table {table_name[0]} supprimée.")
 
         return [table[0] for table in tables]
+    
+    def delete_records(self, table_name, session_id):
+        self.cursor.execute(f"DELETE FROM {table_name} WHERE session_id_id = ?;", (session_id,))
+        print(f"Records in table {table_name} with session_id {session_id} have been deleted.")
 
+
+        
     def show_columns(self, table_name):
         self.cursor.execute(f"PRAGMA table_info({table_name});")
         columns = self.cursor.fetchall()
         return [column[1] for column in columns]  # Extraction des noms de colonnes
 
-Database('../../Database.db').drop_tables()

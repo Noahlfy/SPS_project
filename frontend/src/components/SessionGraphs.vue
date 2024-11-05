@@ -128,7 +128,6 @@ const initializeCharts = () => {
   });
 };
 
-// Watch pour les changements dans sessionStats et mettre à jour les graphiques
 watch(sessionStats, (newValue) => {
   const timestamps = newValue.map(item => new Date(item.time));
   const timestampsInMs = timestamps.map(t => t.getTime());
@@ -136,51 +135,30 @@ watch(sessionStats, (newValue) => {
   if (paceChartInstance) {
     paceChartInstance.data.labels = timestamps;
     paceChartInstance.data.datasets[0].data = newValue.map(item => item.pace);
-
-    // if (timestampsInMs.length > 0) {
-    //   const maxTimestamp = Math.max(...timestampsInMs);
-    //   paceChartInstance.options.scales.x.min = new Date(maxTimestamp - 5 * 60 * 1000);
-    //   paceChartInstance.options.scales.x.max = new Date(maxTimestamp);
-    // } else {
-    //   paceChartInstance.options.scales.x.min = null;
-    //   paceChartInstance.options.scales.x.max = null;
-    // }
-
     paceChartInstance.update();
   }
 
   if (gChartInstance) {
     gChartInstance.data.labels = timestamps;
     gChartInstance.data.datasets[0].data = newValue.map(item => item.g);
-
-    if (timestampsInMs.length > 0) {
-      const maxTimestamp = Math.max(...timestampsInMs);
-      gChartInstance.options.scales.x.min = new Date(maxTimestamp - 5 * 60 * 1000);
-      gChartInstance.options.scales.x.max = new Date(maxTimestamp);
-    } else {
-      gChartInstance.options.scales.x.min = null;
-      gChartInstance.options.scales.x.max = null;
-    }
-
     gChartInstance.update();
   }
 
   if (heartRateChartInstance) {
-    heartRateChartInstance.data.labels = timestamps;
-    heartRateChartInstance.data.datasets[0].data = newValue.map(item => item.BPM);
+    const bpmData = newValue.map(item => item.BPM).filter(bpm => bpm !== null && bpm !== undefined);
 
-    if (timestampsInMs.length > 0) {
-      const maxTimestamp = Math.max(...timestampsInMs);
-      heartRateChartInstance.options.scales.x.min = new Date(maxTimestamp - 5 * 60 * 1000);
-      heartRateChartInstance.options.scales.x.max = new Date(maxTimestamp);
+    if (bpmData.length > 0) {
+      heartRateChartInstance.data.labels = timestamps;
+      heartRateChartInstance.data.datasets[0].data = bpmData;
+      heartRateChartInstance.options.scales.x.min = timestampsInMs[0];
+      heartRateChartInstance.options.scales.x.max = timestampsInMs[timestampsInMs.length - 1];
+      heartRateChartInstance.update();
     } else {
-      heartRateChartInstance.options.scales.x.min = null;
-      heartRateChartInstance.options.scales.x.max = null;
+      console.warn("BPM data is missing or invalid.");
     }
-
-    heartRateChartInstance.update();
   }
 }, { immediate: true });
+
 
 // Observer les changements dans les références des canvas et initialiser les graphiques
 watch([paceChartRef, gChartRef, heartRateChartRef], ([newPaceRef, newGRef, newHeartRateRef]) => {

@@ -298,6 +298,234 @@ class DataHandler:
             ''', (end_time, session_id))
         self.connection.commit()
         self.active_session_id = None
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
 
+# import random
+# from datetime import timedelta
 
+# def update_session_stats_for_impact(session_id, max_g_impact=3.0, impact_duration=5, chaotic_bpm_variance=15):
+#     """
+#     Met à jour les valeurs de session-stats pour simuler un impact lors d'une session, en utilisant le pic de G-force pour détecter l'impact.
+
+#     Args:
+#     - session_id: ID de la session à modifier.
+#     - max_g_impact: Valeur maximale de la G-force lors de l'impact.
+#     - impact_duration: Durée de l'impact en secondes.
+#     - chaotic_bpm_variance: Amplitude de variation chaotique du BPM pour simuler des erreurs de capteur.
+#     """
+
+#     # Récupérer les stats pour la session donnée, en ne prenant que les entrées de g non nulles
+#     stats = SessionStats.objects.filter(session_id=session_id).order_by('time').exclude(g=None)
+#     if not stats.exists():
+#         print("Aucune donnée trouvée pour cette session.")
+#         return
+
+#     # Supprimer les valeurs existantes (sauf `g`)
+#     stats.update(pace=None, BPM=None, distance=0, footing_quality=None, fatigue_level=None, training_intensity=None, concussion_risk=None)
+
+#     # Identifier le point d'impact comme étant le moment du pic de G-force
+#     max_g_stat = stats.order_by('-g').first()
+#     if not max_g_stat or max_g_stat.g < 0.5:
+#         print("Pas de pic de G-force significatif trouvé pour simuler un impact.")
+#         return
+
+#     impact_time = max_g_stat.time  # Temps du pic de G-force
+
+#     # Définir des valeurs initiales
+#     pre_impact_bpm = random.randint(80, 100)  # BPM initial avant l'impact
+#     pre_impact_pace = random.uniform(5.0, 12.0)  # Pace initiale avant l'impact (5-12 km/h)
+
+#     # Remplissage des stats avec des valeurs aléatoires avant l'impact
+#     for i, stat in enumerate(stats):
+#         elapsed_time = (stat.time - impact_time).total_seconds()
+
+#         if stat.BPM is None:
+#             stat.BPM = max(60, min(180, pre_impact_bpm + random.uniform(-chaotic_bpm_variance, chaotic_bpm_variance)))
+#             if random.random() < 0.2:  # Saut occasionnel dans les BPM pour simuler un défaut
+#                 stat.BPM += random.uniform(-20, 20)
+
+#         # Avant l'impact, varier le pace de façon aléatoire
+#         if elapsed_time < 0:  # Avant l'impact
+#             # Simuler des variations chaotiques pour le pace avant l'impact
+#             stat.pace = pre_impact_pace + random.uniform(-1, 1)  # Ajoute une variation légère
+#         else:
+#             # Pendant l'impact
+#             if abs(elapsed_time) <= impact_duration:
+#                 stat.BPM = max(60, min(180, pre_impact_bpm + random.uniform(-chaotic_bpm_variance, chaotic_bpm_variance)))
+#                 stat.pace = pre_impact_pace * (1 - abs(elapsed_time) / impact_duration) + random.uniform(-2, 2)
+#                 stat.pace = max(3, min(15, stat.pace))  # Restreindre pace dans un intervalle raisonnable
+#             elif elapsed_time > impact_duration:
+#                 # Après l'impact : variations chaotiques et retour progressif vers des valeurs normales
+#                 stat.BPM = max(pre_impact_bpm, (stat.BPM or pre_impact_bpm) + random.uniform(-chaotic_bpm_variance / 2, chaotic_bpm_variance / 2))
+#                 if random.random() < 0.1:  # Ajout de variations importantes occasionnelles pour BPM
+#                     stat.BPM += random.uniform(-30, 30)
+#                 stat.pace = min(15, max(3, (stat.pace or pre_impact_pace) + random.uniform(-7, -4)))  # Pace varie autour de valeurs normales
+
+#         # Paramètres de qualité et risque ajustés de façon aléatoire autour de seuils
+#         stat.footing_quality = max(0.6, random.uniform(0.6, 0.95))
+#         # Assurez-vous que les niveaux de fatigue, intensité d'entraînement et risque de commotion sont initialisés à 0
+#         stat.fatigue_level = min(1.0, (stat.fatigue_level if stat.fatigue_level is not None else 0) + random.uniform(0.03, 0.07))
+#         stat.training_intensity = min(1.0, (stat.training_intensity if stat.training_intensity is not None else 0) + random.uniform(0.01, 0.05))
+#         stat.concussion_risk = min(1.0, (stat.concussion_risk if stat.concussion_risk is not None else 0) + random.uniform(0.02, 0.05))
+
+#         # Calcul de la distance (si pace est disponible)
+#         if i > 0 and stats[i - 1].pace:
+#             previous_stat = stats[i - 1]
+#             time_delta = (stat.time - previous_stat.time).total_seconds() / 3600.0  # Conversion en heures
+#             distance_increment = (previous_stat.pace * time_delta) if previous_stat.pace else 0
+#             stat.distance = (previous_stat.distance or 0) + distance_increment
+
+#         # Sauvegarder la mise à jour
+#         stat.save()
+
+#     print(f"Mise à jour des données de session-stats pour la session ID {session_id} complétée avec succès.")
+    
+    
+# def update_concussion_stats_for_impact(session_id):
+#     """
+#     Met à jour les valeurs de concussion-stats pour simuler un impact lors d'une session,
+#     en utilisant les données de session-stats.
+
+#     Args:
+#     - session_id: ID de la session à modifier.
+#     """
+    
+#     # Récupérer les stats pour la session donnée, en ne prenant que les entrées de g non nulles
+#     stats = SessionStats.objects.filter(session_id=session_id).order_by('time').exclude(g=None)
+#     if not stats.exists():
+#         print("Aucune donnée trouvée pour cette session.")
+#         return
+
+#     # Supprimer les valeurs existantes
+#     ConcussionStats.objects.filter(session_id=session_id).delete()
+
+#     # Identifier le point d'impact comme étant le moment du pic de G-force
+#     max_g_stat = stats.order_by('-g').first()
+#     if not max_g_stat or max_g_stat.g < 0.5:
+#         print("Pas de pic de G-force significatif trouvé pour simuler un impact.")
+#         return
+
+#     impact_time = max_g_stat.time  # Temps du pic de G-force
+
+#     # Récupérer l'instance de Session
+#     session_instance = Session.objects.get(session_id=session_id)
+
+#     # Créer des valeurs pour les stats de commotion
+#     for stat in stats:
+#         concussion_stat = ConcussionStats(session_id=session_instance, time=stat.time)
+        
+#         # Assignation des valeurs
+#         concussion_stat.footing_quality = stat.footing_quality  # Récupérer la qualité de footing
+#         concussion_stat.number_of_shocks = 1  # Nombre de chocs aléatoires
+#         concussion_stat.max_g = max_g_stat.g  # Prendre le max G de la session
+#         concussion_stat.BMP = max_g_stat.BPM  # Récupérer le BPM à partir de session-stats
+
+#         # Valeurs aléatoires pour SpO2 et température
+#         concussion_stat.SpO2 = random.uniform(85, 100)  # Simuler des valeurs SpO2 entre 85% et 100%
+#         concussion_stat.temperature = random.uniform(16.0, 19.0)  # Température entre 36 et 39 degrés Celsius
+
+#         # Sauvegarder la mise à jour
+#         concussion_stat.save()
+
+#     print(f"Mise à jour des données de concussion-stats pour la session ID {session_id} complétée avec succès.")
