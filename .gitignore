@@ -1,6 +1,5 @@
 __pycache__
 *.pyc
-Database.db
 .idea/
 .vscode
 node_modules/

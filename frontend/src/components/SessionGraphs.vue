@@ -137,14 +137,14 @@ watch(sessionStats, (newValue) => {
     paceChartInstance.data.labels = timestamps;
     paceChartInstance.data.datasets[0].data = newValue.map(item => item.pace);
 
-    if (timestampsInMs.length > 0) {
-      const maxTimestamp = Math.max(...timestampsInMs);
-      paceChartInstance.options.scales.x.min = new Date(maxTimestamp - 5 * 60 * 1000);
-      paceChartInstance.options.scales.x.max = new Date(maxTimestamp);
-    } else {
-      paceChartInstance.options.scales.x.min = null;
-      paceChartInstance.options.scales.x.max = null;
-    }
+    // if (timestampsInMs.length > 0) {
+    //   const maxTimestamp = Math.max(...timestampsInMs);
+    //   paceChartInstance.options.scales.x.min = new Date(maxTimestamp - 5 * 60 * 1000);
+    //   paceChartInstance.options.scales.x.max = new Date(maxTimestamp);
+    // } else {
+    //   paceChartInstance.options.scales.x.min = null;
+    //   paceChartInstance.options.scales.x.max = null;
+    // }
 
     paceChartInstance.update();
   }
