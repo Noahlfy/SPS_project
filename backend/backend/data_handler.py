@@ -441,6 +441,7 @@ class DataHandler:
 #         elapsed_time = (stat.time - impact_time).total_seconds()
 
 #         if stat.BPM is None:
+#             # Définir BPM avec un peu de variabilité chaotique
 #             stat.BPM = max(60, min(180, pre_impact_bpm + random.uniform(-chaotic_bpm_variance, chaotic_bpm_variance)))
 #             if random.random() < 0.2:  # Saut occasionnel dans les BPM pour simuler un défaut
 #                 stat.BPM += random.uniform(-20, 20)
@@ -460,10 +461,14 @@ class DataHandler:
 #                 stat.BPM = max(pre_impact_bpm, (stat.BPM or pre_impact_bpm) + random.uniform(-chaotic_bpm_variance / 2, chaotic_bpm_variance / 2))
 #                 if random.random() < 0.1:  # Ajout de variations importantes occasionnelles pour BPM
 #                     stat.BPM += random.uniform(-30, 30)
-#                 stat.pace = min(15, max(3, (stat.pace or pre_impact_pace) + random.uniform(-7, -4)))  # Pace varie autour de valeurs normales
+#                 stat.pace = min(15, max(3, (stat.pace or pre_impact_pace) + random.uniform(-1, 1)))  # Pace varie autour de valeurs normales
 
-#         # Paramètres de qualité et risque ajustés de façon aléatoire autour de seuils
-#         stat.footing_quality = max(0.6, random.uniform(0.6, 0.95))
+#         # Ajuster la qualité de footing avec une variation plus marquée
+#         if random.random() < 0.3:  # 30% de chances d'ajouter une variation
+#             stat.footing_quality = max(0.5, min(1.0, (stat.footing_quality if stat.footing_quality is not None else 0.7) + random.uniform(-0.1, 0.1)))
+#         else:
+#             stat.footing_quality = max(0.5, min(1.0, (stat.footing_quality if stat.footing_quality is not None else 0.7)))
+
 #         # Assurez-vous que les niveaux de fatigue, intensité d'entraînement et risque de commotion sont initialisés à 0
 #         stat.fatigue_level = min(1.0, (stat.fatigue_level if stat.fatigue_level is not None else 0) + random.uniform(0.03, 0.07))
 #         stat.training_intensity = min(1.0, (stat.training_intensity if stat.training_intensity is not None else 0) + random.uniform(0.01, 0.05))
@@ -480,6 +485,7 @@ class DataHandler:
 #         stat.save()
 
 #     print(f"Mise à jour des données de session-stats pour la session ID {session_id} complétée avec succès.")
+
     
     
 # def update_concussion_stats_for_impact(session_id):
